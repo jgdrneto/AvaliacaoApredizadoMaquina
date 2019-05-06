@@ -1,35 +1,46 @@
 package experimento.weka;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import experimento.weka.DataSet.DATAVALUE;
+import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.trees.J48;
-import weka.core.Instance;
 import weka.core.Instances;
 
-public class DecisionTree extends J48{
+public class DecisionTree extends MLClassifier{
 
-	private static final long serialVersionUID = 1L;
+	J48 classifier;
 	
 	public DecisionTree() {
-		super();
+		this.classifier = new J48();
 	}
 	
-	public DecisionTree(Boolean unpruned) {
-		super();
-		this.setUnpruned(unpruned);
+	public Evaluation evaluateClassifier(Boolean unpruned,int folds, int seed, DATAVALUE datavalue, Instances data) throws Exception{
+		
+		this.classifier.setUnpruned(unpruned);
+		
+		return this.evaluateClassifier(folds, this.classifier, seed, datavalue, data);
 	}
 	
-	public List<Double> classifyAll(Instances instances) throws Exception {
+	@Override
+	public String toCSVHeader() {
 		
-		this.buildClassifier(instances);
-		
-		List<Double> valores = new ArrayList<Double>();
-		
-		for(Instance i : instances) {
-			valores.add(this.classifyInstance(i));
-		}
-		
-		return valores;
+		return "UNPRUNED,FOLDS,SEED,DATA,LEAFS,SIZE,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED\n\n";
 	}
+	
+	@Override
+	public String toCSV(Evaluation e, int seed, int folds, DATAVALUE dataValue) {
+		
+		String csv =this.classifier.getUnpruned() + "," + 
+					seed + "," + 
+					folds + "," +
+					dataValue.name() + "," +
+					this.classifier.measureNumLeaves() + "," +
+					this.classifier.measureTreeSize() + "," +
+					e.pctCorrect() + "," +
+					e.pctIncorrect() + "\n";
+
+		return csv;
+	}
+
+	
 }

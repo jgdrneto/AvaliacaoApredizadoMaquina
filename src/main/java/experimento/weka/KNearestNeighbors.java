@@ -1,52 +1,51 @@
 package experimento.weka;
 
-import java.util.Random;
-
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
+import experimento.weka.DataSet.DATAVALUE;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 
-public class KNearestNeighbors extends IBk{
+public class KNearestNeighbors extends MLClassifier{
 	
 	public static SelectedTag WEIGHT_INVERSE = new SelectedTag(IBk.WEIGHT_INVERSE, IBk.TAGS_WEIGHTING);
 	public static SelectedTag WEIGHT_NONE = new SelectedTag(IBk.WEIGHT_NONE, IBk.TAGS_WEIGHTING);
 	public static SelectedTag WEIGHT_SIMILARITY = new SelectedTag(IBk.WEIGHT_SIMILARITY, IBk.TAGS_WEIGHTING);
-
-	private static final long serialVersionUID = 1L;
+	
+	public IBk classifier;
 	
 	public KNearestNeighbors() throws Exception {
-		super();
+		this.classifier = new IBk();
 	}
 	
-	public Evaluation evaluateClassifier(int k,int folds, int seed, SelectedTag weight, Instances data) throws Exception{
+	public Evaluation evaluateClassifier(int k,SelectedTag weight,int folds, int seed, DATAVALUE datavalue, Instances data) throws Exception{
 		
-		this.setKNN(k);
+		this.classifier.setKNN(k);
 		
-		this.setDistanceWeighting(weight);
+		this.classifier.setDistanceWeighting(weight);
 		
-		Random rand = new Random(seed);
-	    Instances randData = new Instances(data);
-	    randData.randomize(rand);
+		return this.evaluateClassifier(folds, this.classifier, seed, datavalue, data);
+	}
+	
+	@Override
+	public String toCSVHeader() {
 		
-		if (randData.classAttribute().isNominal()) {
-		      randData.stratify(folds);
-		} 
+		return "K_VALUE,WEIGHT,FOLDS,SEED,DATA,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED\n\n";
 		
-		Evaluation eval = new Evaluation(randData);
+	}
+	
+	@Override
+	public String toCSV(Evaluation e, int seed, int folds,DATAVALUE dataValue) {
 		
-		for (int n = 0; n < folds; n++) {
-			Instances train = randData.trainCV(folds, n, rand);
-			Instances test = randData.testCV(folds, n);
+		String csv =this.classifier.getKNN() + "," + 
+					this.classifier.getDistanceWeighting().getSelectedTag().getReadable()+ "," +
+					seed + "," + 
+					folds + "," +
+					dataValue.name() + "," +
+					e.pctCorrect() + "," +
+					e.pctIncorrect() + "\n";
 
-			Classifier clsCopy = AbstractClassifier.makeCopy(this);
-			clsCopy.buildClassifier(train);
-			eval.evaluateModel(clsCopy, test);
-		}
-		
-		return eval;
+		return csv;
 	}
 	
 }
