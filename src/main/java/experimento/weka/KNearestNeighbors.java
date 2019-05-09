@@ -39,8 +39,8 @@ public class KNearestNeighbors extends MLClassifier{
 		
 		String csv =this.classifier.getKNN() + "," + 
 					this.classifier.getDistanceWeighting().getSelectedTag().getReadable()+ "," +
-					seed + "," + 
 					folds + "," +
+					seed + "," + 
 					dataValue.name() + "," +
 					e.pctCorrect() + "," +
 					e.pctIncorrect() + "\n";

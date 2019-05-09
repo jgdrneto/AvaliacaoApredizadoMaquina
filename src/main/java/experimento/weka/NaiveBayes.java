@@ -26,8 +26,8 @@ public class NaiveBayes extends MLClassifier{
 	@Override
 	public String toCSV(Evaluation e, int seed, int folds, DATAVALUE dataValue) {
 		
-		String csv =seed + "," + 
-					folds + "," +
+		String csv =folds + "," +
+					seed + "," + 
 					dataValue.name() + "," +
 					e.pctCorrect() + "," +
 					e.pctIncorrect() + "\n";

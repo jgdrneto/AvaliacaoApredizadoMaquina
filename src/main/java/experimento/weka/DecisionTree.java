@@ -31,8 +31,8 @@ public class DecisionTree extends MLClassifier{
 	public String toCSV(Evaluation e, int seed, int folds, DATAVALUE dataValue) {
 		
 		String csv =this.classifier.getUnpruned() + "," + 
-					seed + "," + 
 					folds + "," +
+					seed + "," + 
 					dataValue.name() + "," +
 					this.classifier.measureNumLeaves() + "," +
 					this.classifier.measureTreeSize() + "," +

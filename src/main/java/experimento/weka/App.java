@@ -26,9 +26,14 @@ public class App {
 			//FOLDS
 			int folds = 10;
 			
+			//Classe para avaliação do classificador
+			Evaluation eval;
+			
+			
 			//=====================================================================================
 			//KNN EXPERIMENTS
 			//=====================================================================================
+			/*
 			KNearestNeighbors knn = new KNearestNeighbors(); 
 			
 			String knncsv = knn.toCSVHeader();
@@ -58,11 +63,11 @@ public class App {
 							tag = KNearestNeighbors.WEIGHT_SIMILARITY;
 					}
 					
-					for(int i=2; i<12;i++) {
+					for(int i=1; i<11;i++) {
 						
-						System.out.println("K : " + i + " WEIGHT : " + tag.getSelectedTag().getReadable() + " DATA : " + dataValue);
+						System.out.println("EXECUTE KNN " + "K : " + i + " WEIGHT : " + tag.getSelectedTag().getReadable() + " DATA : " + dataValue);
 						
-						Evaluation eval = knn.evaluateClassifier(i,tag,folds,seed,dataValue, dataSet.getData());
+						eval = knn.evaluateClassifier(i,tag,folds,seed,dataValue, dataSet.getData());
 						knncsv+=knn.toCSV(eval, seed, folds, dataValue);
 					}	
 				}
@@ -71,45 +76,108 @@ public class App {
 			knn.toCSVFile(knncsv, "results/knn.csv");
 
 			dataValue = DATAVALUE.NOT_NORMALIZED;
-			
+			*/
+			/*
 			//======================================================================================
 			//DECISION TREE EXPERIMENTS
-			//=====================================================================================
+			//======================================================================================
 			DecisionTree dt = new DecisionTree();
 			
 			String dtCSV = dt.toCSVHeader();
 			
-			boolean poda;
+			boolean unpruned;
 			
 			for(int i=0;i<2;i++) {
 				switch(i) {
 					case 0:
-						poda = false;
+						unpruned = false;
 					break;
 					default:
-						poda = true;
+						unpruned = true;
 				}
 				
-				System.out.println("UNPRUNED : " + poda + " DATA : " + dataValue);
+				System.out.println("EXECUTE DECISION TREE" + " UNPRUNED : " + unpruned + " DATA : " + dataValue);
 				
-				Evaluation eval = dt.evaluateClassifier(poda,folds,seed,dataValue, dataSet.getData());
+		 		eval = dt.evaluateClassifier(unpruned,folds,seed,dataValue, dataSet.getData());
 				dtCSV+=dt.toCSV(eval, seed, folds, dataValue);
 			}
 				
 			dt.toCSVFile(dtCSV, "results/decisionTree.csv");
 			
+			//======================================================================================
+			//NAIVE BAYES
+			//======================================================================================
 			
-			/*
 			NaiveBayes nb = new NaiveBayes();
 			
-			Evaluation eval = nb.evaluateClassifier(10,10,DATAVALUE.NORMALIZED, dataSet.getData());
+			String nbCSV = nb.toCSVHeader();
 			
-			//Evaluation eval = knn.evaluateClassifier(2,KNearestNeighbors.WEIGHT_NONE,10,10,DATAVALUE.NORMALIZED, dataSet.getData());
+			System.out.println("EXECUTE Naive Bayes" + " DATA : " + dataValue);
 			
-		    System.out.println(eval.toSummaryString("=== " + 10 + "-fold Cross-validation ===", false));
-		    
-		    System.out.println("Correct classified: " + eval.pctCorrect());
-		    */
+			eval = nb.evaluateClassifier(folds,seed,dataValue,dataSet.getData());
+			
+			nbCSV+=nb.toCSV(eval, seed, folds, dataValue);
+			
+			nb.toCSVFile(nbCSV, "results/naiveBayes.csv");
+			*/
+			//======================================================================================
+			//ARTIFICIAL NEURAL NETWORK
+			//======================================================================================
+			
+			ArtificialNeuralNetwork mlp = new ArtificialNeuralNetwork();
+			
+			folds = 2;
+			
+			String mlpCSV = mlp.toCSVHeader();
+			
+			for(int i=1;i<3;i++) {
+				
+				int ciclos;
+				
+				switch(i) {
+					case 0:
+						ciclos = 100;
+					break;
+					case 1:
+						ciclos = 1000;
+					break;
+					default:
+						ciclos = 5000;
+				}
+				
+				for(int j=0;j<3;j++) {
+					
+					int neuroniosEscondidos=90+10*j;
+					
+					for(int k =0;k<3;k++) {
+						
+						double taxaAprendizado;
+						
+						switch(k) {
+							case 0:
+								taxaAprendizado = 0.1;
+							break;
+							case 1:
+								taxaAprendizado = 0.01;
+							break;
+							default:
+								taxaAprendizado = 0.001;
+						}
+						
+						System.out.println("EXECUTE MLP" + 
+											" TRAINING TIME: " + ciclos + 
+											" HIDDEN LAYERS : " + neuroniosEscondidos + 
+											" LAYERS RATE : " + taxaAprendizado +
+											" DATA : " + dataValue);
+						
+						eval = mlp.evaluateClassifier(ciclos,neuroniosEscondidos,taxaAprendizado,folds,seed,dataValue,dataSet.getData());
+						mlpCSV+=mlp.toCSV(eval, seed, folds, dataValue);
+						
+						mlp.toCSVFile(mlpCSV, "results/resultsMLP.csv");
+					}
+				}
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

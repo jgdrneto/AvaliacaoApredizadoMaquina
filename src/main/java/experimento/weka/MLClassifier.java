@@ -55,7 +55,9 @@ public abstract class MLClassifier {
 		
 		File file = new File(filename);
 		
-		file.getParentFile().mkdirs();
+		if(file.getParentFile()!=null) {
+			file.getParentFile().mkdirs();
+		}
 		
 		try {
 			Writer writer = new FileWriter(file);
