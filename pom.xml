@@ -27,10 +27,5 @@
 	    <artifactId>weka-stable</artifactId>
 	    <version>3.8.0</version>
 	</dependency>
-        <dependency>
-            <groupId>com.datumbox</groupId>
-            <artifactId>datumbox-framework-lib</artifactId>
-            <version>0.8.1-SNAPSHOT</version>
-        </dependency>
   </dependencies>
 </project>

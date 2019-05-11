@@ -15,6 +15,10 @@ public class ArtificialNeuralNetwork extends MLClassifier{
 		this.classifier.setMomentum(0.8);
 	}
 	
+	public void setSeed(int s) {
+		this.classifier.setSeed(s);
+	}
+	
 	public Evaluation evaluateClassifier(int ciclos,int neuroniosEscondidos,double taxaAprendizado,int folds, int seed, DATAVALUE datavalue, Instances data) throws Exception{
 		
 		this.classifier.setTrainingTime(ciclos);
@@ -26,7 +30,7 @@ public class ArtificialNeuralNetwork extends MLClassifier{
 	
 	@Override
 	public String toCSVHeader() {
-		return "TRAINING TIME,HIDDEN LAYERS,LEARNING RATE,FOLDS,SEED,DATA,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED\n\n";
+		return "TRAINING TIME,HIDDEN LAYERS,LEARNING RATE,FOLDS,SEED,CLASSIFIER SEED,DATA,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED\n\n";
 	}
 	
 	@Override
@@ -37,6 +41,7 @@ public class ArtificialNeuralNetwork extends MLClassifier{
 					this.classifier.getLearningRate() + "," +
 					folds + "," + 
 					seed + "," +
+					this.classifier.getSeed() + "," +
 					dataValue.name() + "," +
 					e.pctCorrect() + "," +
 					e.pctIncorrect() + "\n";
