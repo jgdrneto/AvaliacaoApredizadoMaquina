@@ -46,13 +46,13 @@ public class AppBestMLP {
 				mlp.setSeed(s);
 				
 				System.out.println("EXECUTE MLP" + 
-									" TRAINING TIME: " + 5000 + 
-									" HIDDEN LAYERS : " + 110 + 
-									" LAYERS RATE : " + 0.1 +
+									" TRAINING TIME: " + 1000 + 
+									" HIDDEN LAYERS : " + 90 + 
+									" LAYERS RATE : " + 0.01 +
 									" CLASSIFIER SEED:" + s +
 									" DATA : " + dataValue);
 						
-				eval = mlp.evaluateClassifier(5000,110,01,folds,seed,dataValue,dataSet.getData());
+				eval = mlp.evaluateClassifier(1000,110,0.1,folds,seed,dataValue,dataSet.getData());
 				mlpCSV+=mlp.toCSV(eval, seed, folds, dataValue);
 						
 				mlp.toCSVFile(mlpCSV, "results/resultsBestMLP.csv");
