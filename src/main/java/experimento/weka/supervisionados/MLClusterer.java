@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import weka.clusterers.AbstractClusterer;
@@ -27,6 +28,10 @@ public abstract class MLClusterer {
 	
 	public MLClusterer() {
 		csvString = this.getCSVHearder()+"\n";
+	}
+	
+	public List<Group> getGroups() {
+		return grupos;
 	}
 	
 	public void init(int numGroups) {
@@ -88,20 +93,6 @@ public abstract class MLClusterer {
 		return result;
 	}
 	
-	public double getSilhouette() {
-		
-		SilhouetteIndex s = new SilhouetteIndex();
-		
-		try {
-			s.evaluate(clusterer, this.getCentroids(), this.baseNotClass, this.distancefunction);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return s.getGlobalSilhouette();
-	}
-	
 	public double getDavidBouldin() {
         int numberOfClusters = grupos.size();
         double david = 0.0;
@@ -158,7 +149,7 @@ public abstract class MLClusterer {
 		this.csvString+=this.getClass().getSimpleName()+","+
 						this.grupos.size()+","+
 						seed+","+
-						this.getSilhouette()+","+
+						this.getS()+","+
 						this.getDavidBouldin()+","+
 						this.getCR()+"\n";
 	}
@@ -186,14 +177,14 @@ public abstract class MLClusterer {
 	
 	public void executeClustering(int nGroups,int seed,Instances base, Instances baseNotClass) throws Exception {
 		
-		/*
+		
 		Filter filterNorm = new Normalize();
         filterNorm.setInputFormat(base);
         base = Filter.useFilter(base, filterNorm);
         
         filterNorm.setInputFormat(baseNotClass);
         baseNotClass = Filter.useFilter(baseNotClass, filterNorm);
-        */
+        
 		this.base =  base;
 		this.baseNotClass = baseNotClass;
 		
@@ -322,42 +313,78 @@ public abstract class MLClusterer {
 	
 	public double getS() {
 		
-		List<Double> s = new ArrayList<Double>();
-		
-		//Calcular somatorio de a(i)
+		//s(DATA) = média aritmática de todos os s(G)
+		List<Double> gs = new ArrayList<Double>();
 		
 		for(Group g : this.grupos) {
-			double a=0,b=0;
+			//s(G) = média aritmética de s(i) 
+			List<Double> s = new ArrayList<Double>();
 			
 			for(Instance i : g.getInstances()) {
-				for(Instance j : g.getInstances()) {
-					if(i.equals(j)) {
-						continue;
-					}else {
-						a+= MLClusterer.distance(i, j);
-					}	
-				}
-			}
-			
-			a=a/g.size()-1;
-			
-			double min = Double.NEGATIVE_INFINITY;
-			for(Instance i : g.getInstances()) {
-				for(Group m : this.grupos) {
-					if(!g.equals(m)) {
-						for(Instance j : m.getInstances()) {
-							b+=MLClusterer.distance(i, j);
+				//s(i) = valor de silhouette para a instância
+				if(g.size()==1) {
+					s.add(0.0);
+				}else {
+					double a=0,b=0;
+					
+					for(Instance j : g.getInstances()) {
+						if(i.equals(j)) {
+							continue;
+						}else {
+							double ed = MLClusterer.distance(i, j);
+							a+=ed;
 						}	
 					}
-					b = b/m.size();
-				}
-				if(b<min) {
-					min = b;
+					
+					a=a/g.size()-1;
+					
+					b=Double.MAX_VALUE;
+					
+					for(Group m : this.grupos) {
+						double cont=0;
+						if(!g.equals(m)) {
+							for(Instance j : m.getInstances()) {
+								cont+=MLClusterer.distance(i, j);
+							}
+							cont = cont/m.size();
+							
+							if(cont<b) {
+								b = cont;
+							}
+						}
+					}
+					//Calcular s(i)
+					double result=0;
+					
+					if(a<b) {
+						result = 1 - a/b;
+					}else {
+						if(b>a) {
+							result = b/a - 1;
+						}
+					}
+					
+					s.add(result);
 				}
 			}
 			
+			//CALCULAR MÉDIA DE s(i)
+			double cont = 0;
+			
+			for(Double d : s) {
+				cont+=d;
+			}
+			
+			gs.add(cont/g.size());
+		}
 		
-		return 0;
-	}	
-
-}
+		//CALCULAR MÉDIA DE s(G)
+		double cont = 0;
+		
+		for(Double d : gs) {
+			cont+=d;
+		}
+		
+		return cont/this.grupos.size();
+	}
+}	

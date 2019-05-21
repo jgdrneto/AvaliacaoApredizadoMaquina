@@ -31,14 +31,18 @@ public class Main {
 			
 			for(MLClusterer c : clusterer) {
 				for(int k =2;k<=10;k++) {
-					
 					if(!(c instanceof HA)) {
 						for(int seed : seeds) {
 							
 							System.out.println ("Clusterer" + " : " + c.getClass().getSimpleName() + " K" + " : " + k + " seed" + " : " + seed);
 							
 							c.executeClustering(k, seed, data, dataNotClass);
-							
+							/*
+							int cont=0;
+							for(Group g : c.getGroups()) {
+								System.out.println(cont++ + ": " + g.size());
+							}
+							*/
 							c.toSaveCSVFile(seed,"results/supervisioandos/"+c.getClass().getSimpleName()+".csv");
 						}
 					}else {

@@ -26,4 +26,8 @@ public class Group {
     public List<Instance> getInstances() {
         return instancias;
     }
+
+	public double size() {
+		return this.instancias.size();
+	}
 }

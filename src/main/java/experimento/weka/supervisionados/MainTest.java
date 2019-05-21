@@ -20,8 +20,8 @@ public class MainTest {
         	int[] seeds = {3,12,17,21,30}; 
         	
         	List<MLClusterer> clusterer= new ArrayList<MLClusterer>();
-        	clusterer.add(new Kmeans());
-        	clusterer.add(new EM());
+        	//clusterer.add(new Kmeans());
+        	//clusterer.add(new EM());
         	clusterer.add(new HA());
         	
         	DataSet dataSet = new DataSet("data.arff");
@@ -33,14 +33,12 @@ public class MainTest {
 				for(int k =2;k<=10;k++) {
 					
 					if(!(c instanceof HA)) {
-						for(int seed : seeds) {
 							
-							System.out.println ("Clusterer" + " : " + c.getClass().getSimpleName() + " K" + " : " + k + " seed" + " : " + seed);
+						System.out.println ("Clusterer" + " : " + c.getClass().getSimpleName() + " K" + " : " + k + " seed" + " : " + 3);
 							
-							c.executeClustering(k, seed, data, dataNotClass);
+						c.executeClustering(k, 3, data, dataNotClass);
 							
-							c.toSaveCSVFile(seed,"results/supervisioandos/"+c.getClass().getSimpleName()+".csv");
-						}
+						c.toSaveCSVFile(3,"results/supervisioandos/"+c.getClass().getSimpleName()+".csv");
 					}else {
 						System.out.println ("Clusterer" + " : " + c.getClass().getSimpleName() + " K" + " : " + k);
 						c.executeClustering(k,0, data, dataNotClass);
