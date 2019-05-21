@@ -1,6 +1,8 @@
 package experimento.weka;
 
-import experimento.weka.DataSet.DATAVALUE;
+import experimento.weka.base.DataSet;
+import experimento.weka.base.DataSet.DATAVALUE;
+import experimento.weka.naosupervisionados.ArtificialNeuralNetwork;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.SelectedTag;
 

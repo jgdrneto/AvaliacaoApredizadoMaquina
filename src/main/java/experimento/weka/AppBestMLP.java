@@ -1,6 +1,8 @@
 package experimento.weka;
 
-import experimento.weka.DataSet.DATAVALUE;
+import experimento.weka.base.DataSet;
+import experimento.weka.base.DataSet.DATAVALUE;
+import experimento.weka.naosupervisionados.ArtificialNeuralNetwork;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.SelectedTag;
 
@@ -52,7 +54,7 @@ public class AppBestMLP {
 									" CLASSIFIER SEED:" + s +
 									" DATA : " + dataValue);
 						
-				eval = mlp.evaluateClassifier(1000,110,0.1,folds,seed,dataValue,dataSet.getData());
+				eval = mlp.evaluateClassifier(1000,90,0.01,folds,seed,dataValue,dataSet.getData());
 				mlpCSV+=mlp.toCSV(eval, seed, folds, dataValue);
 						
 				mlp.toCSVFile(mlpCSV, "results/resultsBestMLP.csv");

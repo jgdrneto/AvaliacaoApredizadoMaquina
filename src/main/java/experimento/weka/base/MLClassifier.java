@@ -1,4 +1,4 @@
-package experimento.weka;
+package experimento.weka.base;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
 
-import experimento.weka.DataSet.DATAVALUE;
+import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;

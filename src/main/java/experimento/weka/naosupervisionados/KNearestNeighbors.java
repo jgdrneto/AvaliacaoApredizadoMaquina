@@ -1,6 +1,7 @@
-package experimento.weka;
+package experimento.weka.naosupervisionados;
 
-import experimento.weka.DataSet.DATAVALUE;
+import experimento.weka.base.MLClassifier;
+import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
