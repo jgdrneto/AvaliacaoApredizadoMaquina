@@ -320,4 +320,44 @@ public abstract class MLClusterer {
 	    return Math.sqrt(dist);
 	}
 	
+	public double getS() {
+		
+		List<Double> s = new ArrayList<Double>();
+		
+		//Calcular somatorio de a(i)
+		
+		for(Group g : this.grupos) {
+			double a=0,b=0;
+			
+			for(Instance i : g.getInstances()) {
+				for(Instance j : g.getInstances()) {
+					if(i.equals(j)) {
+						continue;
+					}else {
+						a+= MLClusterer.distance(i, j);
+					}	
+				}
+			}
+			
+			a=a/g.size()-1;
+			
+			double min = Double.NEGATIVE_INFINITY;
+			for(Instance i : g.getInstances()) {
+				for(Group m : this.grupos) {
+					if(!g.equals(m)) {
+						for(Instance j : m.getInstances()) {
+							b+=MLClusterer.distance(i, j);
+						}	
+					}
+					b = b/m.size();
+				}
+				if(b<min) {
+					min = b;
+				}
+			}
+			
+		
+		return 0;
+	}	
+
 }
