@@ -25,7 +25,7 @@ public class Main {
         	clusterer.add(new HA());
         	
         	//MUDAR PARA O ARQUIVO BASE DA SUA BASE DE DADOS
-        	DataSet dataSet = new DataSet("data.arff");
+        	DataSet dataSet = new DataSet("data2.arff");
 			
         	Instances data = dataSet.getData();
 			Instances dataNotClass = dataSet.getDataNotClassifier();
@@ -50,7 +50,6 @@ public class Main {
 			}
 			
         } catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

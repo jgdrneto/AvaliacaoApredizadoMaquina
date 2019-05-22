@@ -291,7 +291,7 @@ public abstract class MLClusterer {
 				cont+=d;
 			}
 			
-			gs.put(g,(cont/g.size()));
+			gs.put(g,(cont/s.size()));
 		}
 		
 		//CALCULAR MÉDIA DE s(G)
@@ -301,7 +301,7 @@ public abstract class MLClusterer {
 			cont+=d;
 		}
 		
-		return cont/this.groups.size();
+		return cont/gs.size();
 	}	
 	
 	private Instance getCentroid(Group g) throws RuntimeException{
