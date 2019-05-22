@@ -29,7 +29,9 @@ public class Kmeans extends MLClusterer{
 		Instances centroides = this.kmeans.getClusterCentroids();
 		
 		for(int i=0;i<this.getGroups().size();i++) {
-			this.getGroups().get(i).setCentroid(centroides.get(i));
+			if(this.groups.get(i).size()!=0) {
+				this.getGroups().get(i).setCentroid(centroides.get(i));
+			}
 		}
 	}
 }

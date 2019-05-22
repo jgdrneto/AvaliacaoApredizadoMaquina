@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,6 @@ public abstract class MLClusterer {
 	public void init(int numGroups) {
 		
 		this.groups = new ArrayList<Group>();
-		
 		for(int i=0;i<numGroups;i++) {
 			groups.add(new Group());
 		}
@@ -119,23 +119,27 @@ public abstract class MLClusterer {
 				this.groups.get(this.clusterer.clusterInstance(i)).getInstances().add(i);
 			}
 			
+			/*
 			//Verificando se o grupo é vazio (BUG DO WEKA), caso sim, ele tem que ser retirado
 			//int cont = 0;
-			for(int i=0;i<this.groups.size();i++) {
-				//System.out.println("Grupo : " + cont++ + " Tamanho : " + groups.get(i).size());
-				
-				if(this.groups.get(i).getInstances().isEmpty()) {
-					System.out.println("WARNING : BUG DO WEKA - O GRUPO " + i + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
-					this.groups.remove(i);
-				}
-				
-			}
-			
+			Iterator<Group> i = this.groups.iterator();
+		    
+			while (i.hasNext()) {
+		         Group g = (Group) i.next();
+		         if (g.getInstances().isEmpty()) {
+		            i.remove();
+		            System.out.println("WARNING : BUG DO WEKA - O GRUPO " + i + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
+		         }
+		      }
+			*/
+			int cont=-1;
 			//Obter centróides
 			for(Group g : this.groups) {
-				if (g.getCentroid() == null) {
-					g.setCentroid(this.getCentroid(g));
+				cont++;
+				if(this.groups.size()==0) {
+					System.out.println("WARNING : BUG DO WEKA - O GRUPO " + cont + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
 				}
+				g.setCentroid(this.getCentroid(g));
 			}
 			
 		} catch (RuntimeException e) {
@@ -216,6 +220,11 @@ public abstract class MLClusterer {
 	}
 	
 	public static double distance(Instance x, Instance y) {
+		
+		if(x==null || y==null) {
+			return Double.POSITIVE_INFINITY;
+		}
+		
 		if (x.numAttributes() != y.numAttributes())
 	        throw new IllegalArgumentException(String.format("Arrays have different length: x[%d], y[%d]", x.numAttributes(), y.numAttributes()));
 
@@ -288,27 +297,27 @@ public abstract class MLClusterer {
 			double cont = 0;
 			
 			for(Double d : s.values()) {
-				cont+=d;
+				cont+=(d/s.size());
 			}
 			
-			gs.put(g,(cont/s.size()));
+			gs.put(g,cont);
 		}
 		
 		//CALCULAR MÉDIA DE s(G)
 		double cont = 0;
 		
 		for(Double d : gs.values()) {
-			cont+=d;
+			cont+=(d/gs.size());
 		}
 		
-		return cont/gs.size();
+		return cont;
 	}	
 	
 	private Instance getCentroid(Group g) throws RuntimeException{
 		
 		switch(g.size()) {
 			case 0 :
-				throw new RuntimeException("Não é possível obter centróide de um grupo sem instâncias");
+				return null;
 			case 1:
 				return g.getInstances().get(0);
 			default:
@@ -348,9 +357,8 @@ public abstract class MLClusterer {
 		for(Group i : this.groups) {
 			double cont=0;
 			for(Instance j : i.getInstances()) {
-				cont+=MLClusterer.distance(i.getCentroid(), j);
+				cont+=(MLClusterer.distance(i.getCentroid(), j)/i.size());
 			}
-			cont=cont/i.size();
 			S.put(i,cont);
 		}
 		
@@ -394,9 +402,9 @@ public abstract class MLClusterer {
 		double cont=0;
 		
 		for(Double d : Di.values()) {
-			cont+=d;
+			cont+=(d/Di.size());
 		}
 		
-		return cont/Di.size();
+		return cont;
 	}
 }
