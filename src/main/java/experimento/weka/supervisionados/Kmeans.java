@@ -1,7 +1,6 @@
 package experimento.weka.supervisionados;
 
 import weka.clusterers.SimpleKMeans;
-import weka.core.Instance;
 import weka.core.Instances;
 
 public class Kmeans extends MLClusterer{
@@ -11,7 +10,6 @@ public class Kmeans extends MLClusterer{
 	public Kmeans() {
 		kmeans = new SimpleKMeans();
 		this.setClusterer(kmeans);
-		this.setDistancefunction(kmeans.getDistanceFunction());
 	}
 	
 	@Override
@@ -26,13 +24,12 @@ public class Kmeans extends MLClusterer{
 	}
 
 	@Override
-	protected Instance obterCentroide(int numClass) {
-		return kmeans.getClusterCentroids().get(numClass);
+	protected void posProcess() {
+		
+		Instances centroides = this.kmeans.getClusterCentroids();
+		
+		for(int i=0;i<this.getGroups().size();i++) {
+			this.getGroups().get(i).setCentroid(centroides.get(i));
+		}
 	}
-
-	@Override
-	public Instances getCentroids() {
-		return this.kmeans.getClusterCentroids();
-	}
-	
 }

@@ -5,43 +5,43 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import weka.clusterers.AbstractClusterer;
 import weka.clusterers.Clusterer;
-import weka.core.AttributeStats;
-import weka.core.DistanceFunction;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
 public abstract class MLClusterer {
-	DistanceFunction distancefunction;
 	Instances base;
 	Instances baseNotClass;
-	List<Group> grupos;
+	List<Group> groups;
 	AbstractClusterer clusterer;
-	List<Instance> centroides; 
 	String csvString;
+	
+	protected abstract void preProcess(int seed, int nGroups);
+	
+	protected abstract void posProcess();
 	
 	public MLClusterer() {
 		csvString = this.getCSVHearder()+"\n";
 	}
 	
 	public List<Group> getGroups() {
-		return grupos;
+		return this.groups;
 	}
 	
 	public void init(int numGroups) {
 		
-		this.grupos = new ArrayList<Group>();
+		this.groups = new ArrayList<Group>();
 		
 		for(int i=0;i<numGroups;i++) {
-			grupos.add(new Group());
+			groups.add(new Group());
 		}
-		this.centroides = new ArrayList<Instance>();
 	}
 	
 	public Clusterer getClusterer() {
@@ -51,95 +51,6 @@ public abstract class MLClusterer {
 	public void setClusterer(AbstractClusterer clusterer) {
 		this.clusterer = clusterer;
 	}
-
-	public DistanceFunction getDistancefunction() {
-		return distancefunction;
-	}
-
-	public void setDistancefunction(DistanceFunction distancefunction) {
-		this.distancefunction = distancefunction;
-	}
-
-	public List<Instance> getCentroids() {
-		
-		List<Instance> result = new ArrayList<Instance>();
-		
-		for(Group g : this.grupos) {
-			if(!g.getInstances().isEmpty()) {
-				Instance media = (Instance)g.getInstances().get(0).copy();
-				
-				for(int a=0; a<g.getInstances().get(0).numAttributes();a++) {
-					double d = 0;
-					for(Instance i : g.getInstances()) {
-						d+=i.value(a);
-					}
-					d=d/g.getInstances().size();
-					media.setValue(a,d);
-				}
-				
-				Instance minInst = g.getInstances().get(0);
-				double min = MLClusterer.distance(g.getInstances().get(0),media);
-				for(Instance i : g.getInstances()) {
-					double value = MLClusterer.distance(media, i); 
-					if(value<min) {
-						minInst = i;
-						min = value;
-					}
-				}
-				
-				result.add(minInst);
-			}
-		}
-		return result;
-	}
-	
-	public double getDavidBouldin() {
-        int numberOfClusters = grupos.size();
-        double david = 0.0;
-        
-        if (numberOfClusters == 1) {
-            throw new RuntimeException(
-                    "Impossible to evaluate Davies-Bouldin index over a single cluster");
-        } else {
-            double[] withinClusterDistance = new double[numberOfClusters];
-
-            int i = 0;
-            for (Group cluster : grupos) {
-                for (Instance punto : cluster.getInstances()) {
-                    withinClusterDistance[i] += MLClusterer.distance(punto, cluster.getCentroide());
-                }
-                withinClusterDistance[i] /= cluster.getInstances().size();
-                i++;
-            }
-
-
-            double result = 0.0;
-            double max = Double.NEGATIVE_INFINITY;
-
-            try {
-                for (i = 0; i < numberOfClusters; i++) {
-                    if (grupos.get(i).getCentroide() != null) {
-                        for (int j = 0; j < numberOfClusters; j++)
-                            if (i != j && grupos.get(j).getCentroide() != null) {
-                                double val = (withinClusterDistance[i] + withinClusterDistance[j])
-                                        / MLClusterer.distance(grupos.get(i).getCentroide(), grupos.get(j).getCentroide());
-                                if (val > max)
-                                    max = val;
-                            }
-                    }
-                    result = result + max;
-                }
-            } catch (Exception e) {
-                System.out.println("Excepcion al calcular DAVID BOULDIN");
-                e.printStackTrace();
-            }
-            david = result / numberOfClusters;
-        }
-
-        return david;
-    }
-		
-	protected abstract void preProcess(int seed, int nGroups);
 	
 	public String getCSVHearder() {
 		return "MODEL,K,SEED,SILHOUETTE,DB,CR"; 
@@ -147,10 +58,10 @@ public abstract class MLClusterer {
 	
 	private void addCSVString(int seed) {
 		this.csvString+=this.getClass().getSimpleName()+","+
-						this.grupos.size()+","+
+						this.groups.size()+","+
 						seed+","+
 						this.getS()+","+
-						this.getDavidBouldin()+","+
+						this.getDB()+","+
 						this.getCR()+"\n";
 	}
 	
@@ -177,13 +88,15 @@ public abstract class MLClusterer {
 	
 	public void executeClustering(int nGroups,int seed,Instances base, Instances baseNotClass) throws Exception {
 		
-		
+		//COMENTE SE NAO QUISER QUE OS DADOS SEJAM NORMALIZADOS
+		//----------------------------------------------------
 		Filter filterNorm = new Normalize();
         filterNorm.setInputFormat(base);
         base = Filter.useFilter(base, filterNorm);
         
         filterNorm.setInputFormat(baseNotClass);
         baseNotClass = Filter.useFilter(baseNotClass, filterNorm);
+        //----------------------------------------------------
         
 		this.base =  base;
 		this.baseNotClass = baseNotClass;
@@ -195,41 +108,54 @@ public abstract class MLClusterer {
 		this.clusterer.buildClusterer(baseNotClass);
 		
 		this.generateStruture(baseNotClass);
-	
+		
+		this.posProcess();
 	}
-	
+
 	private void generateStruture(List<Instance> result) {
 		try {
+			
 			for (Instance i : result) {
-				grupos.get(this.clusterer.clusterInstance(i)).getInstances().add(i);
+				this.groups.get(this.clusterer.clusterInstance(i)).getInstances().add(i);
 			}
 			
-			this.centroides = this.getCentroids();
+			//Verificando se o grupo é vazio (BUG DO WEKA), caso sim, ele tem que ser retirado
+			//int cont = 0;
+			for(int i=0;i<this.groups.size();i++) {
+				//System.out.println("Grupo : " + cont++ + " Tamanho : " + groups.get(i).size());
+				
+				if(this.groups.get(i).getInstances().isEmpty()) {
+					System.out.println("WARNING : BUG DO WEKA - O GRUPO " + i + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
+					this.groups.remove(i);
+				}
+				
+			}
 			
-			for(Instance i : result) {
-				//if the centroid is not set
-				if (grupos.get(this.clusterer.clusterInstance(i)).getCentroide() == null) {
-					grupos.get(this.clusterer.clusterInstance(i)).setCentroide(obterCentroide(this.clusterer.clusterInstance(i)));
+			//Obter centróides
+			for(Group g : this.groups) {
+				if (g.getCentroid() == null) {
+					g.setCentroid(this.getCentroid(g));
 				}
 			}
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			System.exit(-1);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	
 	}
 
-	protected abstract Instance obterCentroide(int numbClass);
-	
 	public double getCR(){
 		
-		return this.getARI(base,baseNotClass);
+		return this.getARI(this.base,this.baseNotClass);
 	}
 	
 	double getARI(Instances X, List<Instance> Y) {
 		
 		// Tabela de contigencia
-		int[][] table = new int[X.numClasses() + 1][grupos.size() + 1];
+		int[][] table = new int[X.numClasses() + 1][this.groups.size() + 1];
 
 		// Numero de objetos
 		int numInstances = X.numInstances();
@@ -240,13 +166,14 @@ public abstract class MLClusterer {
 			try {
 				xClass = (int) X.instance(i).classValue();
 				yClass = (int) this.clusterer.clusterInstance(Y.get(i));
+	
 				table[xClass][yClass]++;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
+		
 		for (int i = 0; i < table.length - 1; i++) {
 			for (int j = 0; j < table[i].length - 1; j++) {
 				table[table.length - 1][j] += table[i][j]; // Computa a Ãºltima
@@ -255,14 +182,14 @@ public abstract class MLClusterer {
 																// Ãºltima coluna
 			}
 		}
-
+	
 		double TERMO_A = 0;
 		for (int i = 0; i < table.length - 1; i++) {
-			for (int j = 0; j < table[i].length - 1; j++) {
+			for (int j = 0; j < table[i].length - 1; j++) {	
 				TERMO_A += Mathematics.combinationOf(table[i][j], 2);
 			}
 		}
-
+		
 		double TERMO_B = 0;
 		double TERMO_C = 0;
 		for (int i = 0; i < table.length - 1; i++) {
@@ -270,13 +197,13 @@ public abstract class MLClusterer {
 					table[i][table[i].length - 1], 2); // Ultima coluna
 			// System.out.printf("B ~> %d-%d\n", i, table[i].length - 1);
 		}
-		
+
 		for (int i = 0; i < table[table.length-1].length - 1; i++) {
 			TERMO_C += Mathematics.combinationOf(table[table.length - 1][i],
 					2); // Ultima linha
 			// System.out.printf("C ~> %d-%d\n", table.length - 1, i);
 		}
-				
+
 		double TERMO_D = Mathematics.combinationOf(numInstances, 2);
 
 		double INDEX = TERMO_A;
@@ -293,54 +220,43 @@ public abstract class MLClusterer {
 	        throw new IllegalArgumentException(String.format("Arrays have different length: x[%d], y[%d]", x.numAttributes(), y.numAttributes()));
 
 	    int n = x.numAttributes();
-	    int m = 0;
 	    double dist = 0.0;
 	    for (int i = 0; i < n; i++) {
-	    	if (!Double.isNaN(x.value(0)) && !Double.isNaN(y.value(0))) {
-	    		m++;
+	    	if (!Double.isNaN(x.value(i)) && !Double.isNaN(y.value(i))) {
 	            double d = x.value(i) - y.value(i);
 	            dist += d * d;
 	        }
-	    }
-
-	    if (m == 0)
-	    	dist = Double.NaN;
-	    else
-	    	dist = n * dist / m;
-	    
+	    }	    
 	    return Math.sqrt(dist);
 	}
 	
 	public double getS() {
 		
 		//s(DATA) = média aritmática de todos os s(G)
-		List<Double> gs = new ArrayList<Double>();
+		Map<Group,Double> gs = new HashMap<Group,Double>();
 		
-		for(Group g : this.grupos) {
+		for(Group g : this.groups) {
 			//s(G) = média aritmética de s(i) 
-			List<Double> s = new ArrayList<Double>();
+			Map<Instance,Double> s = new HashMap<Instance,Double>();
 			
 			for(Instance i : g.getInstances()) {
 				//s(i) = valor de silhouette para a instância
 				if(g.size()==1) {
-					s.add(0.0);
+					s.put(i,0.0);
 				}else {
-					double a=0,b=0;
-					
+					double ai=0,bi=0;
 					for(Instance j : g.getInstances()) {
-						if(i.equals(j)) {
-							continue;
-						}else {
+						if(!i.equals(j)) {
 							double ed = MLClusterer.distance(i, j);
-							a+=ed;
+							ai+=ed;
 						}	
 					}
 					
-					a=a/g.size()-1;
+					ai=ai/(g.size() - 1);
 					
-					b=Double.MAX_VALUE;
+					bi=Double.MAX_VALUE;
 					
-					for(Group m : this.grupos) {
+					for(Group m : this.groups) {
 						double cont=0;
 						if(!g.equals(m)) {
 							for(Instance j : m.getInstances()) {
@@ -348,43 +264,139 @@ public abstract class MLClusterer {
 							}
 							cont = cont/m.size();
 							
-							if(cont<b) {
-								b = cont;
+							if(cont<bi) {
+								bi = cont;
 							}
 						}
 					}
 					//Calcular s(i)
 					double result=0;
 					
-					if(a<b) {
-						result = 1 - a/b;
+					if(ai<bi) {
+						result = 1 - (ai/bi);
 					}else {
-						if(b>a) {
-							result = b/a - 1;
+						if(ai>bi) {
+							result = (bi/ai) - 1;
 						}
 					}
 					
-					s.add(result);
+					s.put(i,(result));
 				}
 			}
 			
 			//CALCULAR MÉDIA DE s(i)
 			double cont = 0;
 			
-			for(Double d : s) {
+			for(Double d : s.values()) {
 				cont+=d;
 			}
 			
-			gs.add(cont/g.size());
+			gs.put(g,(cont/g.size()));
 		}
 		
 		//CALCULAR MÉDIA DE s(G)
 		double cont = 0;
 		
-		for(Double d : gs) {
+		for(Double d : gs.values()) {
 			cont+=d;
 		}
 		
-		return cont/this.grupos.size();
+		return cont/this.groups.size();
+	}	
+	
+	private Instance getCentroid(Group g) throws RuntimeException{
+		
+		switch(g.size()) {
+			case 0 :
+				throw new RuntimeException("Não é possível obter centróide de um grupo sem instâncias");
+			case 1:
+				return g.getInstances().get(0);
+			default:
+				//Calcular ponto médio e depois escolher a instância mais próxima do ponto médio
+				Instance copy = (Instance)g.getInstances().get(0).copy();
+				
+				for(int idAtt=0;idAtt<copy.numAttributes();idAtt++) {
+					double cont=0;
+					for(Instance i : g.getInstances()){
+						cont+=i.value(idAtt);
+					}
+					cont=cont/g.size();
+					copy.setValue(idAtt, cont);
+				}
+				
+				Instance min = g.getInstances().get(0);
+				
+				double minValue = MLClusterer.distance(copy, min);
+				for(Instance i : g.getInstances()){
+					double distance = MLClusterer.distance(copy, i);
+					if(distance < minValue) {
+						min = i;
+						minValue = distance;
+					}
+				}
+				
+				return min;
+		}
+		
 	}
-}	
+
+	public double getDB() {
+		
+		//Calcular todos os Si
+		Map<Group,Double> S = new HashMap<Group,Double>();
+		
+		for(Group i : this.groups) {
+			double cont=0;
+			for(Instance j : i.getInstances()) {
+				cont+=MLClusterer.distance(i.getCentroid(), j);
+			}
+			cont=cont/i.size();
+			S.put(i,cont);
+		}
+		
+		//Calcular todos os Mij
+		Map<Group, Map<Group, Double>> Mij = new HashMap<Group, Map<Group,Double>>();
+		
+		for(Group i : this.groups) {
+			Mij.put(i, new HashMap<Group, Double>());
+			for(Group j : this.groups) {
+				//Calculando distancia entre centróides
+				Mij.get(i).put(j, MLClusterer.distance(i.getCentroid(), j.getCentroid()));
+			}
+		}
+		//Calcular todos os Rij
+		Map<Group, Map<Group, Double>> Rij = new HashMap<Group, Map<Group,Double>>();
+		
+		for(Group i : this.groups) {
+			Rij.put(i, new HashMap<Group, Double>());
+			for(Group j : this.groups) {
+				Rij.get(i).put(j, (S.get(i) + S.get(j)) / Mij.get(i).get(j) );
+			}
+		}
+		
+		//Calcular Di
+		Map<Group,Double> Di = new HashMap<Group,Double>();
+		
+		for(Group i : this.groups) {
+			double max = Double.MIN_VALUE;
+			for(Group j : this.groups) {
+				if(!i.equals(j)) {
+					double value = Rij.get(i).get(j);
+					if(value > max) {
+						max = value;
+					}
+				}
+			}
+			Di.put(i, max);
+		}
+		
+		//Calcular Média dos valores de Di
+		double cont=0;
+		
+		for(Double d : Di.values()) {
+			cont+=d;
+		}
+		
+		return cont/Di.size();
+	}
+}
