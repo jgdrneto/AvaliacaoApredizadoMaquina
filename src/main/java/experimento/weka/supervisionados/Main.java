@@ -21,9 +21,9 @@ public class Main {
         	int maxK = 20;
         	
         	List<MLClusterer> clusterer= new ArrayList<MLClusterer>();
-        	clusterer.add(new Kmeans());
+        	//clusterer.add(new Kmeans());
         	clusterer.add(new EM());
-        	clusterer.add(new HA());
+        	//clusterer.add(new HA());
         	
         	//MUDAR PARA O ARQUIVO BASE DA SUA BASE DE DADOS
         	DataSet dataSet = new DataSet("data.arff");
