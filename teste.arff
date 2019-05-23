@@ -1,0 +1,9 @@
+@relation 'weka.datagenerators.classifiers.classification.RDG1-S_1_-n_2_-a_1_-c_2_-N_0_-I_0_-M_1_-R_10-weka.filters.unsupervised.attribute.Add-Nddd-Clast-W1.0-weka.filters.unsupervised.attribute.Reorder-R1,2-weka.filters.unsupervised.attribute.Reorder-R2,1'
+
+@attribute valor numeric
+@attribute class {c0,c1}
+
+@data
+0.5,c0
+0.1,c0
+0.4,c1

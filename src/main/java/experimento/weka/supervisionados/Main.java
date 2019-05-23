@@ -16,7 +16,7 @@ public class Main {
     public static void main( String[] args ){
     	
         try {
-			//MUDAR VALORES DE SEMENTES
+			//VALORES DE SEMENTES
         	int[] seeds = {3,12,17,21,30}; 
         	int maxK = 20;
         	
@@ -38,13 +38,13 @@ public class Main {
 							System.out.println ("Clusterer" + " : " + c.getClass().getSimpleName() + " K" + " : " + k + " seed" + " : " + seed);
 							
 							c.executeClustering(k, seed, data, dataNotClass);
-							//c.getCR();
-							c.toSaveCSVFile(seed,"results/supervisionados/"+c.getClass().getSimpleName()+".csv");
+							
+							c.toSaveCSVFile(seed,"results/naosupervisionados/"+c.getClass().getSimpleName()+".csv");
 						}	
 					}else {
 						System.out.println ("Clusterer" + " : " + c.getClass().getSimpleName() + " K" + " : " + k);
 						c.executeClustering(k,0, data, dataNotClass);
-						c.toSaveCSVFile(0,"results/supervisionados/"+c.getClass().getSimpleName()+".csv");
+						c.toSaveCSVFile(0,"results/naosupervisionados/"+c.getClass().getSimpleName()+".csv");
 					}
 				}
 			}
