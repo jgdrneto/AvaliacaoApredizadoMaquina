@@ -23,6 +23,7 @@ public abstract class MLClusterer {
 	List<Group> groups;
 	AbstractClusterer clusterer;
 	String csvString;
+	private int numGroups;
 	
 	protected abstract void preProcess(int seed, int nGroups);
 	
@@ -97,7 +98,7 @@ public abstract class MLClusterer {
         filterNorm.setInputFormat(baseNotClass);
         baseNotClass = Filter.useFilter(baseNotClass, filterNorm);
         //----------------------------------------------------
-        
+        this.numGroups=nGroups;
 		this.base =  base;
 		this.baseNotClass = baseNotClass;
 		
@@ -118,27 +119,22 @@ public abstract class MLClusterer {
 			for (Instance i : result) {
 				this.groups.get(this.clusterer.clusterInstance(i)).getInstances().add(i);
 			}
-			
-			/*
-			//Verificando se o grupo é vazio (BUG DO WEKA), caso sim, ele tem que ser retirado
-			//int cont = 0;
+
+			//Verificando se o grupo é vazio, caso sim, ele tem que ser retirado
+			int cont = 0;
 			Iterator<Group> i = this.groups.iterator();
-		    
+		    		
 			while (i.hasNext()) {
-		         Group g = (Group) i.next();
+				 Group g = (Group) i.next();
 		         if (g.getInstances().isEmpty()) {
 		            i.remove();
-		            System.out.println("WARNING : BUG DO WEKA - O GRUPO " + i + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
+		            System.out.println("WARNING : QUANTIDADE DE GRUPOS MENOR QUE K - O GRUPO " + cont + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
 		         }
+		         cont++;
 		      }
-			*/
-			int cont=-1;
+
 			//Obter centróides
 			for(Group g : this.groups) {
-				cont++;
-				if(this.groups.size()==0) {
-					System.out.println("WARNING : BUG DO WEKA - O GRUPO " + cont + " ESTÁ VAZIO - RECOMENDÁVEL MUDAR A SEED QUANDO ISSO ACONTECER" );
-				}
 				g.setCentroid(this.getCentroid(g));
 			}
 			
@@ -159,7 +155,7 @@ public abstract class MLClusterer {
 	double getARI(Instances X, List<Instance> Y) {
 		
 		// Tabela de contigencia
-		int[][] table = new int[X.numClasses() + 1][this.groups.size() + 1];
+		int[][] table = new int[X.numClasses() + 1][this.numGroups + 1];
 
 		// Numero de objetos
 		int numInstances = X.numInstances();
@@ -317,7 +313,7 @@ public abstract class MLClusterer {
 		
 		switch(g.size()) {
 			case 0 :
-				return null;
+				throw new RuntimeException("GRUPO VAZIO NÃO TEM CENTRÓIDE");
 			case 1:
 				return g.getInstances().get(0);
 			default:
