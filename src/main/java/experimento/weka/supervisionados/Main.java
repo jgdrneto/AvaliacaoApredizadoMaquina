@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import experimento.weka.base.DataSet;
+import experimento.weka.base.MyClusterer;
 import weka.core.Instances;
 
 
@@ -20,7 +21,7 @@ public class Main {
         	int[] seeds = {3,12,17,21,30}; 
         	int maxK = 20;
         	
-        	List<MLClusterer> clusterer= new ArrayList<MLClusterer>();
+        	List<MyClusterer> clusterer= new ArrayList<MyClusterer>();
         	//clusterer.add(new Kmeans());
         	clusterer.add(new EM());
         	//clusterer.add(new HA());
@@ -31,7 +32,7 @@ public class Main {
         	Instances data = dataSet.getData();
 			Instances dataNotClass = dataSet.getDataNotClassifier();
 			
-			for(MLClusterer c : clusterer) {
+			for(MyClusterer c : clusterer) {
 				for(int k =2;k<=maxK;k++) {
 					if(!(c instanceof HA)) {
 						for(int seed : seeds) {

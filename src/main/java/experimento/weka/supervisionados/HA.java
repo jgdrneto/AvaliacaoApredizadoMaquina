@@ -1,8 +1,9 @@
 package experimento.weka.supervisionados;
 
+import experimento.weka.base.MyClusterer;
 import weka.clusterers.HierarchicalClusterer;
 
-public class HA extends MLClusterer{
+public class HA extends MyClusterer{
 	
 	HierarchicalClusterer clusterer;
 		

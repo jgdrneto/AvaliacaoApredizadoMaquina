@@ -1,9 +1,10 @@
 package experimento.weka.supervisionados;
 
+import experimento.weka.base.MyClusterer;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;
 
-public class Kmeans extends MLClusterer{
+public class Kmeans extends MyClusterer{
 	
 	SimpleKMeans kmeans;
 	

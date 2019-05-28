@@ -1,4 +1,4 @@
-package experimento.weka.supervisionados;
+package experimento.weka.base;
 
 import java.util.ArrayList;
 import java.util.List;

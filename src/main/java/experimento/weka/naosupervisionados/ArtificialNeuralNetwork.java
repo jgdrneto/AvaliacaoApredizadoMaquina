@@ -1,13 +1,14 @@
 package experimento.weka.naosupervisionados;
 
 
-import experimento.weka.base.MLClassifier;
+import experimento.weka.base.MyClassifier;
 import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
+import weka.core.Instance;
 import weka.core.Instances;
 
-public class ArtificialNeuralNetwork extends MLClassifier{
+public class ArtificialNeuralNetwork extends MyClassifier{
 
 	MultilayerPerceptron classifier;
 	
@@ -15,6 +16,17 @@ public class ArtificialNeuralNetwork extends MLClassifier{
 		this.classifier = new MultilayerPerceptron();
 		this.classifier.setMomentum(0.8);
 	}
+	
+	public void buildClassifier(int ciclos,int neuroniosEscondidos,double taxaAprendizado,Instances data) throws Exception {
+		
+		this.classifier.setTrainingTime(ciclos);
+		this.classifier.setHiddenLayers(String.valueOf(neuroniosEscondidos));
+		this.classifier.setLearningRate(taxaAprendizado);
+		
+		super.buildClassifier(classifier,data);
+	}
+	
+
 	
 	public void setSeed(int s) {
 		this.classifier.setSeed(s);
@@ -48,5 +60,10 @@ public class ArtificialNeuralNetwork extends MLClassifier{
 					e.pctIncorrect() + "\n";
 
 		return csv;
+	}
+
+	@Override
+	public double classifyInstance(Instance i) throws Exception {
+		return this.classifier.classifyInstance(i);
 	}
 }
