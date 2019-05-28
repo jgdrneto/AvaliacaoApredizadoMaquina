@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import experimento.weka.supervisionados.Mathematics;
+import experimento.weka.naosupervisionados.Mathematics;
 import weka.clusterers.AbstractClusterer;
 import weka.clusterers.Clusterer;
 import weka.core.Instance;

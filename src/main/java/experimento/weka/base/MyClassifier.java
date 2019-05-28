@@ -19,6 +19,7 @@ public abstract class MyClassifier {
 	
 	public abstract String toCSVHeader();
 	public abstract String toCSV(Evaluation e, int seed, int folds,DATAVALUE dataValue);
+	public abstract Classifier getClassifier();
 	
 	protected Evaluation evaluateClassifier(int folds,Classifier classifier, int seed,DATAVALUE datavalue, Instances data) throws Exception{
 		
@@ -52,8 +53,12 @@ public abstract class MyClassifier {
 		return eval;
 	}
 	
-	public void buildClassifier(Classifier c, Instances data) throws Exception {
+	protected void buildClassifier(Classifier c, Instances data) throws Exception {
 		c.buildClassifier(data);
+	}
+	
+	public void buildClassifier(Instances data) throws Exception {
+		this.buildClassifier(this.getClassifier(),data);
 	}
 	
 	public abstract double classifyInstance(Instance i) throws Exception;

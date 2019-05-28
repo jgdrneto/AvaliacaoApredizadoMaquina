@@ -1,11 +1,11 @@
-package experimento.weka.naosupervisionados;
+package experimento.weka.supervisionados;
 
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.DataSet.DATAVALUE;
+import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.SelectedTag;
 
 public class NaiveBayes extends MyClassifier{
 
@@ -13,12 +13,6 @@ public class NaiveBayes extends MyClassifier{
 	
 	public NaiveBayes() {
 		this.classifier = new weka.classifiers.bayes.NaiveBayes();
-	}
-	
-	public void buildClassifier(Instances data) throws Exception {
-
-		super.buildClassifier(classifier,data);
-		
 	}
 	
 	@Override
@@ -48,5 +42,10 @@ public class NaiveBayes extends MyClassifier{
 
 		return csv;
 		
+	}
+
+	@Override
+	public Classifier getClassifier() {
+		return this.classifier;
 	}
 }

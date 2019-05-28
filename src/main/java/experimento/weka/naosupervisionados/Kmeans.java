@@ -1,4 +1,4 @@
-package experimento.weka.supervisionados;
+package experimento.weka.naosupervisionados;
 
 import experimento.weka.base.MyClusterer;
 import weka.clusterers.SimpleKMeans;

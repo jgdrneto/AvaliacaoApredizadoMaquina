@@ -2,7 +2,7 @@ package experimento.weka;
 
 import experimento.weka.base.DataSet;
 import experimento.weka.base.DataSet.DATAVALUE;
-import experimento.weka.naosupervisionados.ArtificialNeuralNetwork;
+import experimento.weka.supervisionados.ArtificialNeuralNetwork;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.SelectedTag;
 

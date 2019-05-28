@@ -1,19 +1,19 @@
-package experimento.weka.supervisionados;
+package experimento.weka.naosupervisionados;
 
 import experimento.weka.base.MyClusterer;
-import weka.clusterers.HierarchicalClusterer;
 
-public class HA extends MyClusterer{
+public class EM extends MyClusterer{
 	
-	HierarchicalClusterer clusterer;
+	weka.clusterers.EM clusterer;
 		
-	public HA() {
-		clusterer = new weka.clusterers.HierarchicalClusterer();
+	public EM() {
+		clusterer = new weka.clusterers.EM();
 		this.setClusterer(clusterer);
 	}
 
 	@Override
 	protected void preProcess(int seed, int nGroups) {
+		this.clusterer.setSeed(seed);
 		try {
 			this.clusterer.setNumClusters(nGroups);
 		} catch (Exception e) {
@@ -26,5 +26,4 @@ public class HA extends MyClusterer{
 	protected void posProcess() {
 		//NULL
 	}
-
 }

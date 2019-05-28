@@ -1,4 +1,4 @@
-package experimento.weka.supervisionados;
+package experimento.weka.naosupervisionados;
 
 import java.util.LinkedList;
 

@@ -1,8 +1,9 @@
-package experimento.weka.naosupervisionados;
+package experimento.weka.supervisionados;
 
 
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.DataSet.DATAVALUE;
+import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
@@ -14,6 +15,11 @@ public class DecisionTree extends MyClassifier{
 	
 	public DecisionTree() {
 		this.classifier = new J48();
+	}
+	
+	public DecisionTree(Boolean unpruned) {
+		this.classifier = new J48();
+		this.classifier.setUnpruned(unpruned);
 	}
 	
 	public void buildClassifier(Boolean unpruned,Instances data) throws Exception {
@@ -54,6 +60,11 @@ public class DecisionTree extends MyClassifier{
 					e.pctIncorrect() + "\n";
 
 		return csv;
+	}
+
+	@Override
+	public Classifier getClassifier() {
+		return this.classifier;
 	}
 
 }

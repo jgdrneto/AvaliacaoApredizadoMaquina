@@ -1,7 +1,8 @@
-package experimento.weka.naosupervisionados;
+package experimento.weka.supervisionados;
 
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.DataSet.DATAVALUE;
+import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
@@ -18,6 +19,12 @@ public class KNearestNeighbors extends MyClassifier{
 	
 	public KNearestNeighbors() throws Exception {
 		this.classifier = new IBk();
+	}
+	
+	public KNearestNeighbors(int k,SelectedTag weight) throws Exception {
+		this.classifier = new IBk();
+		this.classifier.setKNN(k);
+		this.classifier.setDistanceWeighting(weight);
 	}
 	
 	public void buildClassifier(int k,SelectedTag weight,Instances data) throws Exception {
@@ -62,6 +69,11 @@ public class KNearestNeighbors extends MyClassifier{
 					e.pctIncorrect() + "\n";
 
 		return csv;
+	}
+
+	@Override
+	public Classifier getClassifier() {
+		return this.classifier;
 	}
 	
 }
