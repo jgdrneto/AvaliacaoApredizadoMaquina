@@ -10,11 +10,12 @@ import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
-public abstract class MLClassifier {
+public abstract class MyClassifier {
 	
 	public abstract String toCSVHeader();
 	public abstract String toCSV(Evaluation e, int seed, int folds,DATAVALUE dataValue);
@@ -50,6 +51,12 @@ public abstract class MLClassifier {
 		
 		return eval;
 	}
+	
+	public void buildClassifier(Classifier c, Instances data) throws Exception {
+		c.buildClassifier(data);
+	}
+	
+	public abstract double classifyInstance(Instance i) throws Exception;
 	
 	public void toCSVFile(String csv,String filename) {
 		

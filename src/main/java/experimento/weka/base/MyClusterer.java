@@ -1,4 +1,4 @@
-package experimento.weka.supervisionados;
+package experimento.weka.base;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import experimento.weka.supervisionados.Mathematics;
 import weka.clusterers.AbstractClusterer;
 import weka.clusterers.Clusterer;
 import weka.core.Instance;
@@ -17,19 +18,19 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
-public abstract class MLClusterer {
-	Instances base;
-	Instances baseNotClass;
-	List<Group> groups;
-	AbstractClusterer clusterer;
-	String csvString;
-	private int numGroups;
+public abstract class MyClusterer {
+	protected Instances base;
+	protected Instances baseNotClass;
+	protected List<Group> groups;
+	protected AbstractClusterer clusterer;
+	protected String csvString;
+	protected int numGroups;
 	
 	protected abstract void preProcess(int seed, int nGroups);
 	
 	protected abstract void posProcess();
 	
-	public MLClusterer() {
+	public MyClusterer() {
 		csvString = this.getCSVHearder()+"\n";
 	}
 	
@@ -252,7 +253,7 @@ public abstract class MLClusterer {
 					double ai=0,bi=0;
 					for(Instance j : g.getInstances()) {
 						if(!i.equals(j)) {
-							double ed = MLClusterer.distance(i, j);
+							double ed = MyClusterer.distance(i, j);
 							ai+=ed;
 						}	
 					}
@@ -265,7 +266,7 @@ public abstract class MLClusterer {
 						double cont=0;
 						if(!g.equals(m)) {
 							for(Instance j : m.getInstances()) {
-								cont+=MLClusterer.distance(i, j);
+								cont+=MyClusterer.distance(i, j);
 							}
 							cont = cont/m.size();
 							
@@ -331,9 +332,9 @@ public abstract class MLClusterer {
 				
 				Instance min = g.getInstances().get(0);
 				
-				double minValue = MLClusterer.distance(copy, min);
+				double minValue = MyClusterer.distance(copy, min);
 				for(Instance i : g.getInstances()){
-					double distance = MLClusterer.distance(copy, i);
+					double distance = MyClusterer.distance(copy, i);
 					if(distance < minValue) {
 						min = i;
 						minValue = distance;
@@ -353,7 +354,7 @@ public abstract class MLClusterer {
 		for(Group i : this.groups) {
 			double cont=0;
 			for(Instance j : i.getInstances()) {
-				cont+=(MLClusterer.distance(i.getCentroid(), j)/i.size());
+				cont+=(MyClusterer.distance(i.getCentroid(), j)/i.size());
 			}
 			S.put(i,cont);
 		}
@@ -365,7 +366,7 @@ public abstract class MLClusterer {
 			Mij.put(i, new HashMap<Group, Double>());
 			for(Group j : this.groups) {
 				//Calculando distancia entre centróides
-				Mij.get(i).put(j, MLClusterer.distance(i.getCentroid(), j.getCentroid()));
+				Mij.get(i).put(j, MyClusterer.distance(i.getCentroid(), j.getCentroid()));
 			}
 		}
 		//Calcular todos os Rij

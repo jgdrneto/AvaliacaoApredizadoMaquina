@@ -1,6 +1,8 @@
 package experimento.weka.supervisionados;
 
-public class EM extends MLClusterer{
+import experimento.weka.base.MyClusterer;
+
+public class EM extends MyClusterer{
 	
 	weka.clusterers.EM clusterer;
 		
