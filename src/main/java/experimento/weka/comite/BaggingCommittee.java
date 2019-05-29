@@ -25,6 +25,7 @@ public class BaggingCommittee extends MyCommittee{
 		this.classifier.setNumIterations(quantClassifiers);
 		this.classifier.setSeed(seed);
 		this.classifier.setNumDecimalPlaces(4);
+		this.classifier.setNumExecutionSlots(Runtime.getRuntime().availableProcessors());
 		
 		return evaluateClassifier(folds, this.classifier, seed, datavalue, data);
 	}

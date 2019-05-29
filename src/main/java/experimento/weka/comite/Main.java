@@ -34,7 +34,7 @@ public class Main {
 			
 			List<MyCommittee> committees = new ArrayList<MyCommittee>();
 			committees.add(new BaggingCommittee());
-			//committees.add(new BoostingCommittee());
+			committees.add(new BoostingCommittee());
 			
 			DecimalFormat df = new DecimalFormat("0.0000");
 			
@@ -55,7 +55,7 @@ public class Main {
 						
 						System.out.println( df.format( ((double)System.currentTimeMillis())/1000 - start) + "s");
 						
-						System.out.println("Quant Acertada : " + e.correct() + " Quant errada : " + e.incorrect());
+						System.out.println("Quant Acertada : " + e.correct() + "("+df.format(e.pctCorrect())+"%)" + " Quant errada : " + e.incorrect() + "("+df.format(e.pctIncorrect())+"%)");
 						
 						mc.toSaveCSVFile(e,seed,folds,DATAVALUE.NOT_NORMALIZED,"results/comites/"+mc.getClass().getSimpleName()+".csv");
 					}

@@ -1,0 +1,13 @@
+COMMITTEE,CLASSIFIER,FOLDS,SEED,QUANT,DATABASE,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED
+BoostingCommittee,NaiveBayes,10,3,10,NOT_NORMALIZED,33,1295,66,8705
+BoostingCommittee,DecisionTree,10,3,10,NOT_NORMALIZED,99,1662,0,8338
+BoostingCommittee,KNearestNeighbors,10,3,10,NOT_NORMALIZED,99,3885,0,6115
+BoostingCommittee,ArtificialNeuralNetwork,10,3,10,NOT_NORMALIZED,89,3830,10,6170
+BoostingCommittee,NaiveBayes,10,3,15,NOT_NORMALIZED,33,1295,66,8705
+BoostingCommittee,DecisionTree,10,3,15,NOT_NORMALIZED,99,1662,0,8338
+BoostingCommittee,KNearestNeighbors,10,3,15,NOT_NORMALIZED,99,3885,0,6115
+BoostingCommittee,ArtificialNeuralNetwork,10,3,15,NOT_NORMALIZED,89,3830,10,6170
+BoostingCommittee,NaiveBayes,10,3,20,NOT_NORMALIZED,33,1295,66,8705
+BoostingCommittee,DecisionTree,10,3,20,NOT_NORMALIZED,99,1662,0,8338
+BoostingCommittee,KNearestNeighbors,10,3,20,NOT_NORMALIZED,99,3885,0,6115
+BoostingCommittee,ArtificialNeuralNetwork,10,3,20,NOT_NORMALIZED,89,3830,10,6170
