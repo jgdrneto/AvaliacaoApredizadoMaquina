@@ -4,7 +4,6 @@ import experimento.weka.base.MyClassifier;
 import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
-import weka.core.Instance;
 import weka.core.Instances;
 
 public class NaiveBayes extends MyClassifier{
@@ -13,11 +12,6 @@ public class NaiveBayes extends MyClassifier{
 	
 	public NaiveBayes() {
 		this.classifier = new weka.classifiers.bayes.NaiveBayes();
-	}
-	
-	@Override
-	public double classifyInstance(Instance i) throws Exception {
-		return this.classifier.classifyInstance(i);
 	}
 	
 	public Evaluation evaluateClassifier(int folds, int seed, DATAVALUE datavalue, Instances data) throws Exception{

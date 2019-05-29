@@ -10,7 +10,6 @@ import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
@@ -28,18 +27,14 @@ public abstract class MyClassifier {
 	        filterNorm.setInputFormat(data);
 	        data = Filter.useFilter(data, filterNorm);
 		}
-		Instances randData = data;
 		
 		Random rand = new Random(seed);
-		/*
 		Instances randData = new Instances(data);
 	    randData.randomize(rand);
-		*/
+		
 		if (randData.classAttribute().isNominal()) {
 		      randData.stratify(folds);
 		} 
-		
-		classifier.buildClassifier(randData);
 		
 		Evaluation eval = new Evaluation(randData);
 		
@@ -54,16 +49,6 @@ public abstract class MyClassifier {
 		
 		return eval;
 	}
-	
-	protected void buildClassifier(Classifier c, Instances data) throws Exception {
-		c.buildClassifier(data);
-	}
-	
-	public void buildClassifier(Instances data) throws Exception {
-		this.buildClassifier(this.getClassifier(),data);
-	}
-	
-	public abstract double classifyInstance(Instance i) throws Exception;
 	
 	public void toCSVFile(String csv,String filename) {
 		

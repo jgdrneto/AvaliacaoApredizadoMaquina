@@ -5,7 +5,6 @@ import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.lazy.IBk;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 
@@ -25,20 +24,6 @@ public class KNearestNeighbors extends MyClassifier{
 		this.classifier = new IBk();
 		this.classifier.setKNN(k);
 		this.classifier.setDistanceWeighting(weight);
-	}
-	
-	public void buildClassifier(int k,SelectedTag weight,Instances data) throws Exception {
-		
-		this.classifier.setKNN(k);
-		this.classifier.setDistanceWeighting(weight);
-		
-		super.buildClassifier(classifier,data);
-		
-	}
-	
-	@Override
-	public double classifyInstance(Instance i) throws Exception {
-		return this.classifier.classifyInstance(i);
 	}
 	
 	public Evaluation evaluateClassifier(int k,SelectedTag weight,int folds, int seed, DATAVALUE datavalue, Instances data) throws Exception{

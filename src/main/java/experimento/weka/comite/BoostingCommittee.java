@@ -5,15 +5,15 @@ import experimento.weka.base.MyClassifier;
 import experimento.weka.base.MyCommittee;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
-import weka.classifiers.meta.Bagging;
+import weka.classifiers.meta.AdaBoostM1;
 import weka.core.Instances;
 
-public class BaggingCommittee extends MyCommittee{
+public class BoostingCommittee extends MyCommittee{
 	
-	Bagging classifier;
+	AdaBoostM1 classifier;
 	
-	public BaggingCommittee() {
-		this.classifier = new Bagging();
+	public BoostingCommittee() {
+		this.classifier = new AdaBoostM1();
 	}
 	
 	public Evaluation evaluateClassifier(int folds,MyClassifier myclassifier,int quantClassifiers, int seed, Instances data,DATAVALUE datavalue) throws Exception{
@@ -28,7 +28,7 @@ public class BaggingCommittee extends MyCommittee{
 		
 		return evaluateClassifier(folds, this.classifier, seed, datavalue, data);
 	}
-	
+
 	@Override
 	public Classifier getClassifier() {
 		return this.classifier;

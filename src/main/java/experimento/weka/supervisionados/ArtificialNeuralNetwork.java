@@ -1,12 +1,10 @@
 package experimento.weka.supervisionados;
 
-
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
-import weka.core.Instance;
 import weka.core.Instances;
 
 public class ArtificialNeuralNetwork extends MyClassifier{
@@ -24,15 +22,6 @@ public class ArtificialNeuralNetwork extends MyClassifier{
 		this.classifier.setTrainingTime(ciclos);
 		this.classifier.setHiddenLayers(String.valueOf(neuroniosEscondidos));
 		this.classifier.setLearningRate(taxaAprendizado);
-	}
-	
-	public void buildClassifier(int ciclos,int neuroniosEscondidos,double taxaAprendizado,Instances data) throws Exception {
-		
-		this.classifier.setTrainingTime(ciclos);
-		this.classifier.setHiddenLayers(String.valueOf(neuroniosEscondidos));
-		this.classifier.setLearningRate(taxaAprendizado);
-		
-		super.buildClassifier(classifier,data);
 	}
 	
 	public void setSeed(int s) {
@@ -67,11 +56,6 @@ public class ArtificialNeuralNetwork extends MyClassifier{
 					e.pctIncorrect() + "\n";
 
 		return csv;
-	}
-
-	@Override
-	public double classifyInstance(Instance i) throws Exception {
-		return this.classifier.classifyInstance(i);
 	}
 
 	@Override

@@ -3,9 +3,9 @@ package experimento.weka.comite;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import experimento.weka.base.DataSet;
+import experimento.weka.base.DataSet.DATAVALUE;
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.MyCommittee;
 import experimento.weka.supervisionados.ArtificialNeuralNetwork;
@@ -24,44 +24,42 @@ public class Main {
 			int basePercent = 10;
 			int folds = 10;
 			int seed = 3;
+			DATAVALUE datavalue = DATAVALUE.NOT_NORMALIZED;
 			
 			List<MyClassifier> classifiers = new ArrayList<MyClassifier>();
 			classifiers.add(new NaiveBayes());
-			//classifiers.add(new DecisionTree(false));
-			//classifiers.add(new KNearestNeighbors(1,KNearestNeighbors.WEIGHT_NONE));
-			//classifiers.add(new ArtificialNeuralNetwork(100,9,0.1));
+			classifiers.add(new DecisionTree(false));
+			classifiers.add(new KNearestNeighbors(1,KNearestNeighbors.WEIGHT_NONE));
+			classifiers.add(new ArtificialNeuralNetwork(100,9,0.1));
 			
 			List<MyCommittee> committees = new ArrayList<MyCommittee>();
 			committees.add(new BaggingCommittee());
-
-			DecimalFormat df = new DecimalFormat("0.000");
+			committees.add(new BoostingCommittee());
+			
+			DecimalFormat df = new DecimalFormat("0.0000");
 			
 			DataSet dataSet = new DataSet("data.arff");
 		
+			//Instances data = dataSet.getSubDataSet(seed,basePercent);
 			Instances data = dataSet.getData();
 			
-			int[] quantClassifiers = {10};
+			int[] quantClassifiers = {10,15,20};
 			
 			for(MyCommittee mc : committees) {
 				for(Integer qClassifiers : quantClassifiers) {
 					for(MyClassifier c : classifiers) {
 						
-						System.out.print("Committee : " + mc.getClass().getSimpleName() +" Classifier : " + c.getClass().getSimpleName() + " Number : " + qClassifiers + " Accuracy : ");
+						double start = ((double)System.currentTimeMillis())/1000; 
 						
+						System.out.print("Committee : " + mc.getClass().getSimpleName() +" Classifier : " + c.getClass().getSimpleName() + " Number : " + qClassifiers + " Time : ");
 						
+						Evaluation e = mc.evaluateClassifier(folds, c, qClassifiers, seed, data,datavalue); 
 						
-						//Evaluation e = mc.evaluateClassifier(folds, c, qClassifiers, seed, data);
+						System.out.println( df.format( ((double)System.currentTimeMillis())/1000 - start) + "s");
 						
-						//System.out.println(df.format(e.pctCorrect()));
+						//System.out.println("Quant Acertada : " + e.correct() + " Quant errada : " + e.incorrect());
 						
-						/*
-						eval.crossValidateModel(mc.getClassifier(), data, folds, new Random(seed));
-						System.out.println(df.format(eval.pctCorrect()));
-						System.out.println(mc.getClassifier());
-						System.out.println(eval.toSummaryString(true));
-						System.out.println(eval.toMatrixString());
-						System.out.println(eval.toClassDetailsString());
-						*/
+						mc.toSaveCSVFile(e,seed,folds,DATAVALUE.NOT_NORMALIZED,"results/comites/"+mc.getClass().getSimpleName()+".csv");
 					}
 				}
 			}
