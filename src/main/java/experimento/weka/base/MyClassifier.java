@@ -28,11 +28,13 @@ public abstract class MyClassifier {
 	        filterNorm.setInputFormat(data);
 	        data = Filter.useFilter(data, filterNorm);
 		}
+		Instances randData = data;
 		
 		Random rand = new Random(seed);
-	    Instances randData = new Instances(data);
+		/*
+		Instances randData = new Instances(data);
 	    randData.randomize(rand);
-		
+		*/
 		if (randData.classAttribute().isNominal()) {
 		      randData.stratify(folds);
 		} 

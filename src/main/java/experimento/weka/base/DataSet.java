@@ -1,8 +1,11 @@
 package experimento.weka.base;
 
+import java.util.Random;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
+import weka.filters.supervised.instance.Resample;
 import weka.filters.unsupervised.attribute.Remove;
 
 public class DataSet{
@@ -33,6 +36,18 @@ public class DataSet{
 		removeFilter.setInputFormat(data);
 		
 		return Filter.useFilter(data, removeFilter);
+	}
+	
+	public Instances getSubDataSet(int seed, int percent) throws Exception {
+		
+		Random rand = new Random(seed);
+		
+		Resample resampleFilter = new Resample();
+		resampleFilter.setInputFormat(this.data);
+		resampleFilter.setSampleSizePercent(percent);
+		resampleFilter.setRandomSeed(rand.nextInt());
+		
+		return Filter.useFilter(data, resampleFilter);
 	}
 	
 }
