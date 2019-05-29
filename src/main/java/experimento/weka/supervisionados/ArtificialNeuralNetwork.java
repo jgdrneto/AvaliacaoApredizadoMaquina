@@ -62,4 +62,9 @@ public class ArtificialNeuralNetwork extends MyClassifier{
 	public Classifier getClassifier() {
 		return this.classifier;
 	}
+
+	@Override
+	public MyClassifier copy() throws Exception {
+		return new ArtificialNeuralNetwork(this.classifier.getTrainingTime(),Integer.parseInt(this.classifier.getHiddenLayers()),this.classifier.getLearningRate());
+	}
 }

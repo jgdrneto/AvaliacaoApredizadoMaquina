@@ -10,9 +10,9 @@ import weka.core.SelectedTag;
 
 public class KNearestNeighbors extends MyClassifier{
 	
-	public static SelectedTag WEIGHT_INVERSE = new SelectedTag(IBk.WEIGHT_INVERSE, IBk.TAGS_WEIGHTING);
-	public static SelectedTag WEIGHT_NONE = new SelectedTag(IBk.WEIGHT_NONE, IBk.TAGS_WEIGHTING);
-	public static SelectedTag WEIGHT_SIMILARITY = new SelectedTag(IBk.WEIGHT_SIMILARITY, IBk.TAGS_WEIGHTING);
+	public final static SelectedTag WEIGHT_INVERSE = new SelectedTag(IBk.WEIGHT_INVERSE, IBk.TAGS_WEIGHTING);
+	public final static SelectedTag WEIGHT_NONE = new SelectedTag(IBk.WEIGHT_NONE, IBk.TAGS_WEIGHTING);
+	public final static SelectedTag WEIGHT_SIMILARITY = new SelectedTag(IBk.WEIGHT_SIMILARITY, IBk.TAGS_WEIGHTING);
 	
 	public IBk classifier;
 	
@@ -59,6 +59,11 @@ public class KNearestNeighbors extends MyClassifier{
 	@Override
 	public Classifier getClassifier() {
 		return this.classifier;
+	}
+
+	@Override
+	public MyClassifier copy() throws Exception {
+		return new KNearestNeighbors(this.classifier.getKNN(),this.classifier.getDistanceWeighting());
 	}
 	
 }

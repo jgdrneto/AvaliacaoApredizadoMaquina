@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import experimento.weka.base.DataSet.DATAVALUE;
 import weka.classifiers.evaluation.Evaluation;
@@ -28,7 +29,7 @@ public abstract class MyCommittee extends MyClassifier{
 		this.df = nDf;
 	}
 	
-	public abstract Evaluation evaluateClassifier(int folds,MyClassifier myclassifier,int quantClassifiers, int seed, Instances data, DATAVALUE datavalue) throws Exception;
+	public abstract Evaluation evaluateClassifier(int folds,List<MyClassifier> myclassifier,int quantClassifiers, int seed, Instances data,DATAVALUE datavalue) throws Exception;
 	
 	@Override
 	public String toCSVHeader() {

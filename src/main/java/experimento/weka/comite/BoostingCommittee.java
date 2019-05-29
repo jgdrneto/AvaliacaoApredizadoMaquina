@@ -1,5 +1,7 @@
 package experimento.weka.comite;
 
+import java.util.List;
+
 import experimento.weka.base.DataSet.DATAVALUE;
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.MyCommittee;
@@ -16,22 +18,32 @@ public class BoostingCommittee extends MyCommittee{
 		this.classifier = new AdaBoostM1();
 	}
 	
-	public Evaluation evaluateClassifier(int folds,MyClassifier myclassifier,int quantClassifiers, int seed, Instances data,DATAVALUE datavalue) throws Exception{
+	public Evaluation evaluateClassifier(int folds,List<MyClassifier> myclassifiers,int quantClassifiers, int seed, Instances data,DATAVALUE datavalue) throws Exception{
 		
-		this.quant= quantClassifiers;
-		this.cClass = myclassifier.getClass();
+		if(!myclassifiers.isEmpty()) {
+			
+			this.quant= quantClassifiers;
+			this.cClass = myclassifiers.get(0).getClass();
+			
+			this.classifier.setClassifier(myclassifiers.get(0).getClassifier());
+			this.classifier.setNumIterations(quantClassifiers);
+			this.classifier.setSeed(seed);
+			this.classifier.setNumDecimalPlaces(4);
+			
+			return evaluateClassifier(folds, this.classifier, seed, datavalue, data);
 		
-		this.classifier.setClassifier(myclassifier.getClassifier());
-		this.classifier.setNumIterations(quantClassifiers);
-		this.classifier.setSeed(seed);
-		this.classifier.setNumDecimalPlaces(4);
-		
-		return evaluateClassifier(folds, this.classifier, seed, datavalue, data);
+		}else {
+			throw new RuntimeException("Lista de classificadores vazia");
+		}
 	}
-
 	@Override
 	public Classifier getClassifier() {
 		return this.classifier;
+	}
+	
+	@Override
+	public MyClassifier copy() throws Exception {
+		return new BoostingCommittee();
 	}
 	
 }

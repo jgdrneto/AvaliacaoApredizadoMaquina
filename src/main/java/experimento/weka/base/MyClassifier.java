@@ -19,6 +19,7 @@ public abstract class MyClassifier {
 	public abstract String toCSVHeader();
 	public abstract String toCSV(Evaluation e, int seed, int folds,DATAVALUE dataValue);
 	public abstract Classifier getClassifier();
+	public abstract MyClassifier copy() throws Exception ;
 	
 	protected Evaluation evaluateClassifier(int folds,Classifier classifier, int seed,DATAVALUE datavalue, Instances data) throws Exception{
 		

@@ -54,4 +54,9 @@ public class DecisionTree extends MyClassifier{
 		return this.classifier;
 	}
 
+	@Override
+	public MyClassifier copy() throws Exception {
+		return new DecisionTree(this.classifier.getUnpruned());
+	}
+
 }

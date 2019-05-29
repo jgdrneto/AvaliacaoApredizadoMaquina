@@ -42,4 +42,9 @@ public class NaiveBayes extends MyClassifier{
 	public Classifier getClassifier() {
 		return this.classifier;
 	}
+
+	@Override
+	public MyClassifier copy() {
+		return new NaiveBayes();
+	}
 }

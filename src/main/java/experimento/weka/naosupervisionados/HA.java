@@ -17,7 +17,6 @@ public class HA extends MyClusterer{
 		try {
 			this.clusterer.setNumClusters(nGroups);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
