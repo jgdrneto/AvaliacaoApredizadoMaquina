@@ -21,7 +21,7 @@ public class Main {
 		
 		try {
 
-			int basePercent = 10;
+			int basePercent = 100;
 			int folds = 10;
 			int seed = 3;
 			DATAVALUE datavalue = DATAVALUE.NOT_NORMALIZED;
@@ -34,21 +34,19 @@ public class Main {
 			
 			List<MyCommittee> committees = new ArrayList<MyCommittee>();
 			committees.add(new BaggingCommittee());
-			committees.add(new BoostingCommittee());
+			//committees.add(new BoostingCommittee());
 			
 			DecimalFormat df = new DecimalFormat("0.0000");
 			
 			DataSet dataSet = new DataSet("data.arff");
 		
-			//Instances data = dataSet.getSubDataSet(seed,basePercent);
-			Instances data = dataSet.getData();
+			Instances data = dataSet.getSubDataSet(seed, basePercent);
 			
 			int[] quantClassifiers = {10,15,20};
 			
 			for(MyCommittee mc : committees) {
 				for(Integer qClassifiers : quantClassifiers) {
 					for(MyClassifier c : classifiers) {
-						
 						double start = ((double)System.currentTimeMillis())/1000; 
 						
 						System.out.print("Committee : " + mc.getClass().getSimpleName() +" Classifier : " + c.getClass().getSimpleName() + " Number : " + qClassifiers + " Time : ");
@@ -57,7 +55,7 @@ public class Main {
 						
 						System.out.println( df.format( ((double)System.currentTimeMillis())/1000 - start) + "s");
 						
-						//System.out.println("Quant Acertada : " + e.correct() + " Quant errada : " + e.incorrect());
+						System.out.println("Quant Acertada : " + e.correct() + " Quant errada : " + e.incorrect());
 						
 						mc.toSaveCSVFile(e,seed,folds,DATAVALUE.NOT_NORMALIZED,"results/comites/"+mc.getClass().getSimpleName()+".csv");
 					}

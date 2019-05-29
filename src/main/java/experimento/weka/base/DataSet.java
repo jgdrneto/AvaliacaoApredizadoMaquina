@@ -39,15 +39,14 @@ public class DataSet{
 	}
 	
 	public Instances getSubDataSet(int seed, int percent) throws Exception {
-		
-		Random rand = new Random(seed);
-		
+
 		Resample resampleFilter = new Resample();
+		
 		resampleFilter.setInputFormat(this.data);
 		resampleFilter.setSampleSizePercent(percent);
-		resampleFilter.setRandomSeed(rand.nextInt());
+		resampleFilter.setRandomSeed(seed);
 		
-		return Filter.useFilter(data, resampleFilter);
+		return Filter.useFilter(this.data, resampleFilter);
 	}
 	
 }
