@@ -6,6 +6,7 @@ import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.instance.Resample;
+import weka.filters.unsupervised.attribute.RandomSubset;
 import weka.filters.unsupervised.attribute.Remove;
 
 public class DataSet{
@@ -45,6 +46,18 @@ public class DataSet{
 		resampleFilter.setInputFormat(this.data);
 		resampleFilter.setSampleSizePercent(percent);
 		resampleFilter.setRandomSeed(seed);
+		
+		return Filter.useFilter(this.data, resampleFilter);
+	}
+	
+
+	public Instances getSubAttDataSet(int seed, int percent) throws Exception {
+
+		RandomSubset resampleFilter = new RandomSubset();
+		
+		resampleFilter.setInputFormat(this.data);
+		resampleFilter.setNumAttributes(((double)percent)/100);
+		resampleFilter.setSeed(seed);
 		
 		return Filter.useFilter(this.data, resampleFilter);
 	}

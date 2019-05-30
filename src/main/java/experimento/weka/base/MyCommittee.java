@@ -18,7 +18,11 @@ public abstract class MyCommittee extends MyClassifier{
 	protected DecimalFormat df;
 	
  	protected String csvString;
-	
+
+	public void resetCsvString() {
+		this.csvString = this.toCSVHeader() + "\n";
+	}
+
 	public MyCommittee() {
 		this.csvString=this.toCSVHeader() + "\n";
 		this.df = new DecimalFormat("0.0000");
@@ -71,5 +75,13 @@ public abstract class MyCommittee extends MyClassifier{
 			e.printStackTrace();
 		}		
 	}
-	
+
+	public int getQuant() {
+		return this.quant;
+	}
+
+	public Class<? extends MyClassifier> getcClass() {
+		return this.cClass;
+	}
+
 }

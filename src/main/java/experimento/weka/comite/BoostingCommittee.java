@@ -5,6 +5,7 @@ import java.util.List;
 import experimento.weka.base.DataSet.DATAVALUE;
 import experimento.weka.base.MyClassifier;
 import experimento.weka.base.MyCommittee;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.meta.AdaBoostM1;
@@ -16,6 +17,19 @@ public class BoostingCommittee extends MyCommittee{
 	
 	public BoostingCommittee() {
 		this.classifier = new AdaBoostM1();
+	}
+	
+	private BoostingCommittee(BoostingCommittee nClassifier) throws Exception {
+		this.classifier = new AdaBoostM1();
+		this.quant = nClassifier.getQuant();
+		this.cClass = nClassifier.getcClass();
+		
+		AdaBoostM1 clsAnt = (AdaBoostM1)nClassifier.getClassifier();
+		
+		this.classifier.setClassifier(AbstractClassifier.makeCopy(nClassifier.getClassifier()));
+		this.classifier.setNumIterations(clsAnt.getNumIterations());
+		this.classifier.setSeed(clsAnt.getSeed());
+		this.classifier.setNumDecimalPlaces(clsAnt.getNumDecimalPlaces());
 	}
 	
 	public Evaluation evaluateClassifier(int folds,List<MyClassifier> myclassifiers,int quantClassifiers, int seed, Instances data,DATAVALUE datavalue) throws Exception{
@@ -43,7 +57,7 @@ public class BoostingCommittee extends MyCommittee{
 	
 	@Override
 	public MyClassifier copy() throws Exception {
-		return new BoostingCommittee();
+		return new BoostingCommittee(this);
 	}
 	
 }
