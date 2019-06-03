@@ -57,10 +57,10 @@ public class Main {
 			
 			//Lista com todos os comites
 			List<MyCommittee> committees = new ArrayList<MyCommittee>();
-			committees.add(new BaggingCommittee(percentTrainingSet));
-			committees.add(new BoostingCommittee());
+			//committees.add(new BaggingCommittee(percentTrainingSet));
+			//committees.add(new BoostingCommittee());
 			//committees.add(new HomogeneousStackingCommittee());
-			//committees.add(new HeterogeneousStackingCommittee());
+			committees.add(new HeterogeneousStackingCommittee());
 			
 			//Formatar os números para impressão com apenas 4 casas decimais
 			DecimalFormat df = new DecimalFormat("0.0000");
@@ -116,9 +116,15 @@ public class Main {
 						}else {
 							for(double[] l  : percentClassifier) {
 								
+								List<Double> lList = new ArrayList<Double>();
+								
+								for(double cl : l) {
+									lList.add(cl);
+								}
+								
 								int[] c = new int[l.length];
 								
-								System.out.print("Committee : " + mc.getClass().getSimpleName() +" Classifier : " + l.toString() + " Number : " + qClassifiers + " Seed : " + seed +" Time : ");
+								System.out.print("Committee : " + mc.getClass().getSimpleName() +" Classifier : " + lList.toString() + " Number : " + qClassifiers + " Seed : " + seed +" Time : ");
 								
 								int count = 0;
 								for(int i=0;i<l.length;i++) {
@@ -201,14 +207,18 @@ public class Main {
 			System.out.println("=======================================================");
 			
 			
-			List<MyCommittee> comites = new ArrayList<MyCommittee>();
+			Map<String,MyCommittee> comites = new HashMap<String,MyCommittee>();
 			
 			//Classificar classificadores diferentes
+			//Sequencia: 0 - Homogeneo Normal
+			//			 1 - Homogeneo SubAtt
+			//			 2 - Heterogeneo Normal
+			//			 3 - Heterogeneo SubAtt
 			for(MyCommittee mc : bestsStackings.keySet()) {
 				for(String dataName : datas.keySet()) {
 					MyCommittee newMc = (MyCommittee) mc.copy();
 					newMc.getClassifier().buildClassifier(datas.get(dataName));
-					comites.add(newMc);
+					comites.put(mc.getcClass().getSimpleName()+"_"+dataName,newMc);
 				}
 			}
 			
@@ -217,25 +227,56 @@ public class Main {
 			int bCorreto = 0;
 			int bIncorreto = 1;
 			
-			int[][] matrix = new int[2][2];
+			Map<String,Map<String,Double>> valuesQ = new HashMap<String, Map<String, Double>>();
+ 			
+			List<String> keys = new ArrayList<String>(comites.keySet());
 			
-			for(Instance i : data) {
-				for(MyCommittee mc : comites) {
+			for(int c1 = 0;c1<keys.size()-1;c1++) {
+				MyCommittee ca = comites.get(keys.get(c1));
+				valuesQ.put(keys.get(c1), new HashMap<String, Double>());
+				for(int c2=c1+1;c2<keys.size();c2++) {	
+					int[][] matrix = {{0,0},{0,0}};
 					
-					int c = (int)mc.getClassifier().classifyInstance(i);
+					MyCommittee cb = comites.get(keys.get(c2));
 					
+					for(Instance i : data) {
+						
+						int aclass = (int)ca.getClassifier().classifyInstance(i);
+						int bclass = (int)cb.getClassifier().classifyInstance(i);
+						int realclass = (int)i.classValue();
+							
+						if(bclass == realclass && bclass == realclass) {
+							matrix[bCorreto][aCorreto]+=1;
+						}else if (bclass == realclass && aclass != realclass) {
+							matrix[bCorreto][aIncorreto]+=1;
+						}else if(bclass != realclass && aclass == realclass) {
+							matrix[bIncorreto][aCorreto]+=1;
+						}else {
+							matrix[bIncorreto][aIncorreto]+=1;
+						}
+					}
 					
+					double a = matrix[bCorreto][aCorreto];
+					double b = matrix[bCorreto][aIncorreto];
+					double c = matrix[bIncorreto][aCorreto];
+					double d = matrix[bIncorreto][aIncorreto];
+					
+					double q = (a*d - b*c)/(a*d + b*c);
+					
+					valuesQ.get(keys.get(c1)).put(keys.get(c2), q);
 				}
 			}
 			
-			
-			
+			for(String c1 : valuesQ.keySet()) {
+				for(String c2 : valuesQ.get(c1).keySet()) {
+					System.out.println("Q["+c1+"]["+c2+"] = " + valuesQ.get(c1).get(c2));
+				}
+			}
 			
 			//===================================END CALCULATION OF PAIRWASE Q CLASSIFICATION==========================================
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 }
