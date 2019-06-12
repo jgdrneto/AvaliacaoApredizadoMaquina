@@ -64,10 +64,15 @@ public class BaggingCommittee extends MyCommittee{
 	public Classifier getClassifier() {
 		return this.classifier;
 	}
-
+	
+	public Classifier[] getClassifiers() {
+		Classifier[] c = new Classifier[1];
+		c[0] = this.classifier.getClassifier();
+		return c;
+	}
+	
 	@Override
 	public MyClassifier copy() throws Exception {
 		return new BaggingCommittee(this);
 	}
-
 }

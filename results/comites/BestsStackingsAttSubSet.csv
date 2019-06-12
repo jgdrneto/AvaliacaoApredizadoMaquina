@@ -1,0 +1,5 @@
+COMMITTEE,CLASSIFIER,FOLDS,SEED,QUANT,DATABASE,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED
+HomogeneousStackingCommittee,DecisionTree,10,5,10,NOT_NORMALIZED,98,8327,1,1673
+HomogeneousStackingCommittee,DecisionTree,10,5,10,ATT_SUBSET,98,8327,1,1673
+HeterogeneousStackingCommittee,DecisionTree,10,5,10,NOT_NORMALIZED,99,3885,0,6115
+HeterogeneousStackingCommittee,DecisionTree,10,5,10,ATT_SUBSET,98,8883,1,1117

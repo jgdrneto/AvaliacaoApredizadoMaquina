@@ -59,5 +59,12 @@ public class BoostingCommittee extends MyCommittee{
 	public MyClassifier copy() throws Exception {
 		return new BoostingCommittee(this);
 	}
+
+	@Override
+	public Classifier[] getClassifiers() {
+		Classifier[] c = new Classifier[1];
+		c[0] = this.classifier.getClassifier();
+		return c;
+	}
 	
 }

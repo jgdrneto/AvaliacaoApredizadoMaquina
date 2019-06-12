@@ -1,5 +1,6 @@
 package experimento.weka.comite;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import experimento.weka.base.DataSet.DATAVALUE;
@@ -13,9 +14,32 @@ import weka.core.Instances;
 public class HomogeneousStackingCommittee extends MyCommittee{
 	
 	Stacking classifier;
-	
-	public HomogeneousStackingCommittee() {
+	MyClassifier meta;
+	public HomogeneousStackingCommittee(MyClassifier nMeta) throws Exception {
 		this.classifier = new Stacking();
+		this.meta = nMeta.copy();
+	}
+	
+	public HomogeneousStackingCommittee(MyClassifier meta,List<MyClassifier> myclassifiers,int quantClassifiers, int seed, Instances data) throws Exception {
+		this.classifier = new Stacking();
+		this.quant=myclassifiers.size();
+		this.cClass = myclassifiers.get(0).getClass();
+		
+		Classifier[] classifiers = new Classifier[myclassifiers.size()];
+		
+		for(int i=0;i<myclassifiers.size();i++) {
+			classifiers[i] = myclassifiers.get(i).copy().getClassifier();
+		}
+		this.classifier.setMetaClassifier(meta.getClassifier());
+		this.classifier.setClassifiers(classifiers);
+		this.classifier.setSeed(seed);
+		this.classifier.setNumDecimalPlaces(4);
+		this.classifier.setNumExecutionSlots(Runtime.getRuntime().availableProcessors());
+		this.classifier.buildClassifier(data);
+	}
+	
+	public Classifier[] getClassifiers() {
+		return this.classifier.getClassifiers();
 	}
 	
 	public Evaluation evaluateClassifier(int folds,List<MyClassifier> myclassifiers,int quantClassifiers, int seed, Instances data,DATAVALUE datavalue) throws Exception{
@@ -28,7 +52,8 @@ public class HomogeneousStackingCommittee extends MyCommittee{
 		for(int i=0;i<myclassifiers.size();i++) {
 			classifiers[i] = myclassifiers.get(i).getClassifier();
 		}
-
+		
+		this.classifier.setMetaClassifier(this.meta.getClassifier());
 		this.classifier.setClassifiers(classifiers);
 		this.classifier.setSeed(seed);
 		this.classifier.setNumDecimalPlaces(4);
@@ -44,7 +69,7 @@ public class HomogeneousStackingCommittee extends MyCommittee{
 	
 	@Override
 	public MyClassifier copy() throws Exception {
-		return new HomogeneousStackingCommittee();
+		return new HomogeneousStackingCommittee(this.meta);
 	}
 	
 

@@ -8,6 +8,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import experimento.weka.base.DataSet.DATAVALUE;
+import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.Instances;
 
@@ -18,7 +19,9 @@ public abstract class MyCommittee extends MyClassifier{
 	protected DecimalFormat df;
 	
  	protected String csvString;
-
+ 	
+ 	public abstract Classifier[] getClassifiers();
+ 	
 	public void resetCsvString() {
 		this.csvString = this.toCSVHeader() + "\n";
 	}
@@ -39,7 +42,7 @@ public abstract class MyCommittee extends MyClassifier{
 	public String toCSVHeader() {
 		return "COMMITTEE,CLASSIFIER,FOLDS,SEED,QUANT,DATABASE,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED";
 	}
-	
+
 	@Override
 	public String toCSV(Evaluation e, int seed, int folds, DATAVALUE dataValue) {
 		
