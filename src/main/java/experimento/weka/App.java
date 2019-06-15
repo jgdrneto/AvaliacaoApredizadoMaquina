@@ -3,6 +3,8 @@ package experimento.weka;
 import experimento.weka.base.DataSet;
 import experimento.weka.base.DataSet.DATAVALUE;
 import experimento.weka.supervisionados.ArtificialNeuralNetwork;
+import experimento.weka.supervisionados.DecisionTree;
+import experimento.weka.supervisionados.NaiveBayes;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.SelectedTag;
 
@@ -79,18 +81,21 @@ public class App {
 
 			dataValue = DATAVALUE.NOT_NORMALIZED;
 			*/
-			/*
+			
 			//======================================================================================
 			//DECISION TREE EXPERIMENTS
 			//======================================================================================
+			/*
 			DecisionTree dt = new DecisionTree();
 			
 			String dtCSV = dt.toCSVHeader();
 			
 			boolean unpruned;
 			
-			for(int i=0;i<2;i++) {
-				switch(i) {
+			for(int i=0;i<27;i++) {
+				DecisionTree copyDt = (DecisionTree) dt.copy();
+				
+				switch(i%2) {
 					case 0:
 						unpruned = false;
 					break;
@@ -98,14 +103,15 @@ public class App {
 						unpruned = true;
 				}
 				
-				System.out.println("EXECUTE DECISION TREE" + " UNPRUNED : " + unpruned + " DATA : " + dataValue);
+				System.out.println("EXECUTE DECISION TREE" + " UNPRUNED : " + unpruned + " DATA : " + dataValue + " SEED: " + (3+i*2));
 				
-		 		eval = dt.evaluateClassifier(unpruned,folds,seed,dataValue, dataSet.getData());
-				dtCSV+=dt.toCSV(eval, seed, folds, dataValue);
+		 		eval = copyDt.evaluateClassifier(unpruned,folds,3 + i*2,dataValue, dataSet.getData());
+		 		copyDt.getClassifier().buildClassifier(dataSet.getData());
+		 		dtCSV+=copyDt.toCSV(eval, seed, folds, dataValue);
 			}
 				
-			dt.toCSVFile(dtCSV, "results/decisionTree.csv");
-			
+			dt.toCSVFile(dtCSV, "results/estatistico/decisionTree.csv");
+			*/
 			//======================================================================================
 			//NAIVE BAYES
 			//======================================================================================
@@ -114,18 +120,22 @@ public class App {
 			
 			String nbCSV = nb.toCSVHeader();
 			
-			System.out.println("EXECUTE Naive Bayes" + " DATA : " + dataValue);
 			
-			eval = nb.evaluateClassifier(folds,seed,dataValue,dataSet.getData());
 			
-			nbCSV+=nb.toCSV(eval, seed, folds, dataValue);
-			
-			nb.toCSVFile(nbCSV, "results/naiveBayes.csv");
-			*/
+			for(int i=0;i<27;i++) {
+				
+				System.out.println("EXECUTE Naive Bayes" + " DATA : " + dataValue + " SEED: " + (3 + i*2));
+				
+				eval = nb.evaluateClassifier(folds,3 + i*2,dataValue,dataSet.getData());
+				
+				nbCSV+=nb.toCSV(eval, 3 + i*2, folds, dataValue);
+				
+				nb.toCSVFile(nbCSV, "results/estatistico/naiveBayes.csv");
+			}
 			//======================================================================================
 			//ARTIFICIAL NEURAL NETWORK
 			//======================================================================================
-			
+			/*
 			ArtificialNeuralNetwork mlp = new ArtificialNeuralNetwork();
 			
 			folds = 2;
@@ -179,7 +189,7 @@ public class App {
 					}
 				}
 			}
-			
+			*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,0 +1,21 @@
+COMMITTEE,CLASSIFIER,FOLDS,SEED,QUANT,DATABASE,CORRECTLY CLASSIFIED,INCORRECTLY CLASSIFIED
+HeterogeneousStackingCommittee,DecisionTree,3,3,10,NOT_NORMALIZED,98,8883,1,1117
+HeterogeneousStackingCommittee,DecisionTree,3,5,10,NOT_NORMALIZED,98,8327,1,1673
+HeterogeneousStackingCommittee,DecisionTree,3,7,10,NOT_NORMALIZED,98,8327,1,1673
+HeterogeneousStackingCommittee,DecisionTree,3,9,10,NOT_NORMALIZED,98,0545,1,9455
+HeterogeneousStackingCommittee,DecisionTree,3,11,10,NOT_NORMALIZED,98,9439,1,0561
+HeterogeneousStackingCommittee,DecisionTree,3,13,10,NOT_NORMALIZED,98,4436,1,5564
+HeterogeneousStackingCommittee,DecisionTree,3,15,10,NOT_NORMALIZED,98,8883,1,1117
+HeterogeneousStackingCommittee,DecisionTree,3,17,10,NOT_NORMALIZED,98,8883,1,1117
+HeterogeneousStackingCommittee,DecisionTree,3,19,10,NOT_NORMALIZED,98,8883,1,1117
+HeterogeneousStackingCommittee,DecisionTree,3,21,10,NOT_NORMALIZED,98,6659,1,3341
+HeterogeneousStackingCommittee,DecisionTree,3,23,10,NOT_NORMALIZED,98,7771,1,2229
+HeterogeneousStackingCommittee,DecisionTree,3,25,10,NOT_NORMALIZED,98,9439,1,0561
+HeterogeneousStackingCommittee,DecisionTree,3,27,10,NOT_NORMALIZED,98,7771,1,2229
+HeterogeneousStackingCommittee,DecisionTree,3,29,10,NOT_NORMALIZED,98,8327,1,1673
+HeterogeneousStackingCommittee,DecisionTree,3,31,10,NOT_NORMALIZED,98,5548,1,4452
+HeterogeneousStackingCommittee,DecisionTree,3,33,10,NOT_NORMALIZED,98,6659,1,3341
+HeterogeneousStackingCommittee,DecisionTree,3,35,10,NOT_NORMALIZED,98,4436,1,5564
+HeterogeneousStackingCommittee,DecisionTree,3,37,10,NOT_NORMALIZED,98,9439,1,0561
+HeterogeneousStackingCommittee,DecisionTree,3,39,10,NOT_NORMALIZED,98,5548,1,4452
+HeterogeneousStackingCommittee,DecisionTree,3,41,10,NOT_NORMALIZED,98,7771,1,2229

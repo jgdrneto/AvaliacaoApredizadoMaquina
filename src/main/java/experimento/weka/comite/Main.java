@@ -2,9 +2,7 @@ package experimento.weka.comite;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import experimento.weka.base.DataSet;
 import experimento.weka.base.DataSet.DATAVALUE;
@@ -15,7 +13,7 @@ import experimento.weka.supervisionados.DecisionTree;
 import experimento.weka.supervisionados.KNearestNeighbors;
 import experimento.weka.supervisionados.NaiveBayes;
 import weka.classifiers.evaluation.Evaluation;
-import weka.core.Instance;
+
 import weka.core.Instances;
 
 public class Main {
@@ -41,10 +39,10 @@ public class Main {
 			//===================================INIT DEFINITIONS==========================================
 			
 			int percentTrainingSet = 30;	//Porcentagem da base de dados de treinamento para o bagging 
-			int folds = 10;					//Quantidade de folds para o Cross-Validation
+			int folds = 4;					//Quantidade de folds para o Cross-Validation
 			int[] seeds = {3,5,7};			//Quantidade e valores de sementes usada para cada comite
 			int basePercent = 50;			//Porcentagem da quantidade de atributos da base de dados a ser usada nos melhores comites
-			
+
 			//Definição se os dados vão ser normalizados ou não
 			DATAVALUE datavalue = DATAVALUE.NOT_NORMALIZED;		
 			
@@ -138,7 +136,6 @@ public class Main {
 								}
 								
 								execute(mc,listC,qClassifiers, folds, seed, data, datavalue, df,"results/comites/"+mc.getClass().getSimpleName()+".csv");
-								
 							}				
 						}
 					}	
